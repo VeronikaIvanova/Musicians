@@ -11,10 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170228152105) do
+ActiveRecord::Schema.define(version: 20170301101927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "chat_participants", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "chat_id"
+    t.integer  "user_id"
+  end
+
+  add_index "chat_participants", ["chat_id"], name: "index_chat_participants_on_chat_id", using: :btree
+  add_index "chat_participants", ["user_id"], name: "index_chat_participants_on_user_id", using: :btree
+
+  create_table "chats", force: :cascade do |t|
+    t.string   "Theme"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "cities", force: :cascade do |t|
     t.string   "name"
@@ -52,6 +68,18 @@ ActiveRecord::Schema.define(version: 20170228152105) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "messages", force: :cascade do |t|
+    t.string   "text"
+    t.string   "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "chat_id"
+    t.integer  "user_id"
+  end
+
+  add_index "messages", ["chat_id"], name: "index_messages_on_chat_id", using: :btree
+  add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
 
   create_table "states", force: :cascade do |t|
     t.string   "name"
@@ -100,9 +128,13 @@ ActiveRecord::Schema.define(version: 20170228152105) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["state_id"], name: "index_users_on_state_id", using: :btree
 
+  add_foreign_key "chat_participants", "chats"
+  add_foreign_key "chat_participants", "users"
   add_foreign_key "cities", "states"
   add_foreign_key "instrumentalists", "instruments"
   add_foreign_key "instrumentalists", "users"
+  add_foreign_key "messages", "chats"
+  add_foreign_key "messages", "users"
   add_foreign_key "states", "countries"
   add_foreign_key "user_genres", "genres"
   add_foreign_key "user_genres", "users"

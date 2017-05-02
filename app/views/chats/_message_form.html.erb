@@ -1,0 +1,6 @@
+<%= form_for [@chat, @message]  do |f| %>
+<div class="field">
+    <%= f.text_area :text, placeholder: "Compose new message..." %>
+ </div>
+  <%= f.submit "Send" %>
+<% end %>

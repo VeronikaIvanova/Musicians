@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Theme:</strong>
+  <%= @chat.Theme %>
+</p>
+
+<% @messages.each  do |message| %>
+  <p> 
+    Created at:  <%= message.created_at %><br />
+    Sender:  <%= User.find(message.user_id).firstname %> <%= User.find(message.user_id).lastname %> <br />
+    Text: <%= message.text %><br />
+    <% if message.user_id==current_user.id  %> 
+      <%= link_to 'Destroy', message, method: :delete, data: { confirm: 'Are you sure?' } %>
+    <% end %>  <br />
+    
+  </p>
+<% end %>
+
+<%= render 'message_form' %>
+
+<%= link_to 'Edit', edit_chat_path(@chat) %> |
+<%= link_to 'Back', chats_path %>

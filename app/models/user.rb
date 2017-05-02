@@ -11,5 +11,12 @@ class User < ActiveRecord::Base
 
   has_many :user_genres
   has_many :genres, through: :user_genres
+ 
+
+  has_many :messages
+  has_many :chat_participants
+  has_many :chats, through: :chat_participants
+
+  
 
 end

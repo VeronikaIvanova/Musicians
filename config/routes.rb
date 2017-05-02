@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
+  resources :chats do
+    resources :messages, :only=>[:new, :create]
+  end
   devise_for :users
-  
-  root 'static#index'
+  resources :messages, only: [:destroy]
 
+  root 'static#index'
+  post "/chats/:chat_id/messages" => "messages#create"
   match '/users/:id', to: 'users#show' ,  via: 'get'
   match '/users/',    to: 'users#index',  via: 'get'
   # The priority is based upon order of creation: first created -> highest priority.
