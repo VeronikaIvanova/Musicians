@@ -1,4 +1,4 @@
-cclass ChatsController < ApplicationController
+class ChatsController < ApplicationController
   before_action :authenticate_user! 
   before_action :set_chat, only: [:show, :edit, :update, :destroy]
   before_action :messages_for_chat, only: [:show]

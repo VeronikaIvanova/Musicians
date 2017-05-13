@@ -22,9 +22,11 @@
         <td><%= group.city_name %></td>
         <td><%= group.state_name %></td>
         <td><%= group.country_name %></td>
-        <td><%= link_to 'Show', group %></td>
-        <td><%= link_to 'Edit', edit_group_path(group) %></td>
-        <td><%= link_to 'Destroy', group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', group %></td> 
+        <% if UserToGroup.where(user_id: current_user.id, group_id: group.id, role_id: Role.where(name: "admin").take.id).order(created_at: :desc).first  !=nil %>  
+          <td><%= link_to 'Edit', edit_group_path(group) %></td>
+          <td><%= link_to 'Destroy', group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
