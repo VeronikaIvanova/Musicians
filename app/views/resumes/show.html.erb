@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= link_to "#{User.find(@instrumentalist.user_id).firstname}
+         #{User.find(@instrumentalist.user_id).lastname}", "/users/#{current_user.id}" %>  <br />
+
+  <strong>Instrument:</strong>
+  <%= Instrument.find(@instrumentalist.instrument_id).name %><br />
+  <strong>Genres:</strong>
+    <% @resume.resume_genres.each do |genre| %>
+      <%=  Genre.find(genre.id).name %> 
+    <% end %> 
+</p>
+
+<%= link_to 'Edit', edit_resume_path(@resume) %> |
+<%= link_to 'Back', resumes_path %>

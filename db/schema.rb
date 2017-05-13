@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301101927) do
+ActiveRecord::Schema.define(version: 20170512181538) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,16 +32,13 @@ ActiveRecord::Schema.define(version: 20170301101927) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "cities", force: :cascade do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer  "state_id"
+  create_table "controllers", force: :cascade do |t|
+    t.string   "Instruments"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
-  add_index "cities", ["state_id"], name: "index_cities_on_state_id", using: :btree
-
-  create_table "countries", force: :cascade do |t|
+  create_table "genders", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -51,6 +48,30 @@ ActiveRecord::Schema.define(version: 20170301101927) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "group_to_genres", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "group_id"
+    t.integer  "genre_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string   "name"
+    t.string   "information"
+    t.string   "city_name"
+    t.string   "state_name"
+    t.string   "country_name"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "instrumentalist_to_groups", force: :cascade do |t|
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "instrumentalist_id"
+    t.integer  "group_id"
   end
 
   create_table "instrumentalists", force: :cascade do |t|
@@ -81,14 +102,25 @@ ActiveRecord::Schema.define(version: 20170301101927) do
   add_index "messages", ["chat_id"], name: "index_messages_on_chat_id", using: :btree
   add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
 
-  create_table "states", force: :cascade do |t|
+  create_table "resume_genres", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "resume_id"
+    t.integer  "genre_id"
+  end
+
+  create_table "resumes", force: :cascade do |t|
+    t.integer  "instrumentalist_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "information"
+  end
+
+  create_table "roles", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "country_id"
   end
-
-  add_index "states", ["country_id"], name: "index_states_on_country_id", using: :btree
 
   create_table "user_genres", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -99,6 +131,14 @@ ActiveRecord::Schema.define(version: 20170301101927) do
 
   add_index "user_genres", ["genre_id"], name: "index_user_genres_on_genre_id", using: :btree
   add_index "user_genres", ["user_id"], name: "index_user_genres_on_user_id", using: :btree
+
+  create_table "user_to_groups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.integer  "group_id"
+    t.integer  "role_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -117,28 +157,35 @@ ActiveRecord::Schema.define(version: 20170301101927) do
     t.string   "lastname"
     t.datetime "date_of_birth"
     t.text     "info"
-    t.integer  "city_id"
-    t.integer  "state_id"
-    t.integer  "country_id"
+    t.integer  "gender_id"
+    t.string   "country_name"
+    t.string   "city_name"
+    t.string   "state_name"
+    t.integer  "role_id"
   end
 
-  add_index "users", ["city_id"], name: "index_users_on_city_id", using: :btree
-  add_index "users", ["country_id"], name: "index_users_on_country_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["gender_id"], name: "index_users_on_gender_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  add_index "users", ["state_id"], name: "index_users_on_state_id", using: :btree
 
   add_foreign_key "chat_participants", "chats"
   add_foreign_key "chat_participants", "users"
-  add_foreign_key "cities", "states"
+  add_foreign_key "group_to_genres", "genres"
+  add_foreign_key "group_to_genres", "groups"
+  add_foreign_key "instrumentalist_to_groups", "groups"
+  add_foreign_key "instrumentalist_to_groups", "instrumentalists"
   add_foreign_key "instrumentalists", "instruments"
   add_foreign_key "instrumentalists", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
-  add_foreign_key "states", "countries"
+  add_foreign_key "resume_genres", "genres"
+  add_foreign_key "resume_genres", "resumes"
+  add_foreign_key "resumes", "instrumentalists"
   add_foreign_key "user_genres", "genres"
   add_foreign_key "user_genres", "users"
-  add_foreign_key "users", "cities"
-  add_foreign_key "users", "countries"
-  add_foreign_key "users", "states"
+  add_foreign_key "user_to_groups", "groups"
+  add_foreign_key "user_to_groups", "roles"
+  add_foreign_key "user_to_groups", "users"
+  add_foreign_key "users", "genders"
+  add_foreign_key "users", "roles"
 end

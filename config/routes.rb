@@ -1,12 +1,36 @@
 Rails.application.routes.draw do
+  resources :roles
+  resources :groups
+  resources :resumes
+  resources :instruments
+ 
+  resources :genres
+  resources :genders
+  resources :instruments
+
   resources :chats do
     resources :messages, :only=>[:new, :create]
   end
-  devise_for :users
-  resources :messages, only: [:destroy]
 
+  devise_for :users
+
+  resources :messages, only: [:destroy]
+  resources :instrumentalist_to_groups, only: [:destroy]
+  resources :user_to_groups, only: [:destroy]
+
+  resources :groups do
+    resources :instrumentalist_to_groups, :only=>[:new, :create]
+    resources :user_to_groups, :only=>[:new, :create]
+  end
+ 
+  get 'instrument/user/:user_id', to: 'application#instruments'	
+  get 'cities/:states', to: 'application#cities'
+  get 'states/:countries', to: 'application#states'
+  get 'countries', to: 'application#countries'
   root 'static#index'
   post "/chats/:chat_id/messages" => "messages#create"
+  post "/groups/:group_id/instrumentalist_to_groups" => "instrumentalist_to_groups#create"
+  post "/groups/:group_id/user_to_groups" => "user_to_groups#create"
   match '/users/:id', to: 'users#show' ,  via: 'get'
   match '/users/',    to: 'users#index',  via: 'get'
   # The priority is based upon order of creation: first created -> highest priority.

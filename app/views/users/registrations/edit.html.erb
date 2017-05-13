@@ -15,7 +15,95 @@
     <%= f.date_select :date_of_birth %>
   </div>
 
+  <div><%= f.label :gender %><br />
+    <%= f.collection_select :gender_id, Gender.order(:name), :id, :name, include_blank: true %><br />
+  </div> <br />
 
+<div class="field"> <%= f.label :location %><br />
+
+  <div class="field">
+  <select  name="user[country_name]" >
+    <option value="<%=current_user.country_name %>" selected="">
+      <% if current_user.country_name!=nil %>
+        <% CS.countries.each do |k,v| %>
+          <% if k.to_s==current_user.country_name %>      
+            <%=  v %>
+          <% end %> 
+         <% end %> 
+      <% else %>
+       Select Country      
+      <% end %>       
+   </option>
+      <% CS.countries.each do |k, v| %>
+        <option value="<%= k %>"><%= v %></option>
+      <% end %>
+  </select>  
+ </div>
+
+  <div class="field">
+  <select name="user[state_name]">
+    <option value=<%=current_user.state_name %> selected="">
+       <% if current_user.state_name!=nil %>
+        <% CS.states(current_user.country_name).each do |k,v| %>
+          <% if  k.to_s==current_user.state_name %>      
+            <%=  v %>
+          <% end %> 
+         <% end %> 
+      <% else %>
+       Select State      
+      <% end %>       
+    </option>
+      <% CS.states(current_user.country_name).each do |k,v| %>
+        <option value="<%= k %>"><%= v %></option>
+      <% end %>
+  </select>
+ </div>
+
+  <div class="field">
+  <select name="user[city_name]">
+     <option value="<%=current_user.city_name %>" selected="">
+       <% if current_user.city_name!=nil or current_user.city_name!="" %>
+         <%=current_user.city_name %>
+       <% else %>
+         Select City
+       <% end %>
+     </option>
+      <% CS.cities(current_user.state_name).each do |k,v| %>
+        <option value="<%= k %>"><%= k %></option>
+      <% end %>
+  </select>
+ </div>
+ </div>
+
+<script>
+$('select[name="user[country_name]"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$('select[name="user[state_name]"]');
+  $('select[name="user[city_name]"]').empty();
+  $.getJSON('/states/' + $(this).val(), function (data) {
+    states.empty();
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ i +'>' + ele + '</option>';     
+    }); states.html(opt);
+  });  
+});
+</script>
+
+
+<script>
+$('select[name="user[state_name]"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$('select[name="user[city_name]"]');
+  $.getJSON('/cities/' + $(this).val(), function (data) {
+    cities.empty();
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele +'>' + ele+ '</option>';     
+    }); cities.html(opt);
+  });
+});
+</script>
 
   <div class="field"><%= f.label :info %><br />
     <%= f.text_field :info %>
@@ -44,10 +132,20 @@
     <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
     <%= f.password_field :current_password, autocomplete: "off" %>
   </div>
-
+  <ul>  
+     <%= f.label :Instruments %><br>
+     <% Instrument.all.each do |instrument| %>
+       <li>   
+          <%= check_box_tag "user[instrument_ids][]", instrument.id, f.object.instruments.include?(instrument) %>
+          <%= instrument.name%>
+       </li>
+     <% end %>
+  </ul>
   <div class="actions">
     <%= f.submit "Update" %>
   </div>
+
+
 <% end %>
 
 <h3>Cancel my account</h3>

@@ -1,0 +1,66 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @group.name %>
+</p>
+
+<p>
+  <strong>Information:</strong>
+  <%= @group.information %>
+</p>
+
+ <p><strong>country:</strong> <% CS.countries.each do |k,v| %>
+        <% if @group.country_name!=nil and  k.to_s==@group.country_name %>      
+         <%=  v %>
+        <% end %>     <% end %> <br></p>
+<p><strong> state: </strong> <% CS.states(current_user.country_name).each do |k,v| %>
+        <% if @group.state_name!=nil and  k!=nil and k.to_s.==@group.state_name %>      
+          <%=  v %>
+        <% end %> 
+       <% end %>    	<br></p>
+ <p><strong> city:</strong>  <%= @group.city_name %><br> </p>
+
+  <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).first !=nil %>  
+   <div class="field">
+      <strong>Participants: </strong>
+       <ul>
+       <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
+       <li>        
+          <%= User.find(instrumentalist.user_id).firstname %> <%= User.find(instrumentalist.user_id).lastname%>
+          <%= Instrument.find(instrumentalist.instrument_id).name %>       
+          <%= link_to 'Destroy', InstrumentalistToGroup.where(group_id: @group.id,instrumentalist_id:instrumentalist.id).first, method: :delete, data: { confirm: 'Are you sure?' } %>     
+     </li>
+     <% end %>
+      </ul> 
+ </div>   
+
+<input type="button" onclick="add()" value="Add!"/>
+<div id="form_participants" style = "display:none">
+  <%= render 'participant_form' %>
+</div>
+
+<%else %> 
+<div class="field">
+      <strong>Participants: </strong>
+       <ul>
+       <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
+       <li>        
+          <%= User.find(instrumentalist.user_id).firstname %> <%= User.find(instrumentalist.user_id).lastname%>
+          <%= Instrument.find(instrumentalist.instrument_id).name %>       
+       </li>
+     <% end %>
+      </ul> 
+ </div>   
+<% end %>
+<%= render 'follow_form' %>
+<%= link_to 'Edit', edit_group_path(@group) %> |
+<%= link_to 'Back', groups_path %>
+
+
+<script type="text/javascript">
+   function add() {
+     var div = document.getElementById('form_participants');
+     div.style.display = 'block';
+}
+</script>

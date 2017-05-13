@@ -14,6 +14,52 @@
   <div><%= f.label :date_of_birth %><br />
     <%= f.date_select :date_of_birth %>
   </div>
+ <div><%= f.label :gender %><br />
+  <%= f.collection_select :gender_id, Gender.order(:name), :id, :name, include_blank: true %>
+ </div>
+
+ <select  name="user[country_name]" >
+    <option value="" selected="">Select Country</option>
+      <% CS.countries.each do |key, value| %>
+        <option value="<%= key %>"><%= value %></option>
+      <% end %>
+  </select>  
+ 
+  <select name="user[state_name]">
+    <option value="" selected="">Select State</option>
+  </select>
+
+  <select name="user[city_name]">
+    <option value="">Select City</option>
+  </select>
+<script>
+$('select[name="user[country_name]"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$('select[name="user[state_name]"]');
+  $.getJSON('/states/' + $(this).val(), function (data) {
+    states.empty();
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ i +'>' + ele + '</option>';     
+    }); states.html(opt);
+  });
+});
+</script>
+
+
+<script>
+$('select[name="user[state_name]"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$('select[name="user[city_name]"]');
+  $.getJSON('/cities/' + $(this).val(), function (data) {
+    cities.empty();
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele +'>' + ele+ '</option>';     
+    }); cities.html(opt);
+  });
+});
+</script>
 
   <div><%= f.label :info %><br />
     <%= f.text_field :info %>
@@ -33,14 +79,25 @@
     <%= f.password_field :password, autocomplete: "off" %>
   </div>
 
+
   <div class="field">
     <%= f.label :password_confirmation %><br />
     <%= f.password_field :password_confirmation, autocomplete: "off" %>
   </div>
 
+ <ul>  
+     <%= f.label :Instruments %><br>
+     <% Instrument.all.each do |instrument| %>
+       <li>   
+          <%= check_box_tag "user[instrument_ids][]", instrument.id, f.object.instruments.include?(instrument) %>
+          <%= instrument.name%>
+       </li>
+     <% end %>
+  </ul>
   <div class="actions">
     <%= f.submit "Sign up" %>
   </div>
+
 <% end %>
 
 <%= render "users/shared/links" %>

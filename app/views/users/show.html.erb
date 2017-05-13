@@ -1,14 +1,25 @@
 
 <div class="row">
-     <p> <h1>       
-       
+     <p> <h1>             
       </h1></p>
    <h2>
-     <p>  <%= @user.firstname %>
-           <%= @user.lastname %>  <br>
-          email: <%= @user.email %><br>
-          date of birth: <%= @user.date_of_birth %><br>
-	  info: <%= @user.info %><br>
+     <p> 
+       <%= @user.firstname %> <%= @user.lastname %><br>
+       email: <%= @user.email %><br>
+       date of birth: <%= @user.date_of_birth %><br>
+       info: <%= @user.info %><br>
+       <% if @user.gender!=nil %>
+       gender: <%= Gender.find(@user.gender).name %><br> <%end %>
+       country: <% CS.countries.each do |k,v| %>
+        <% if @user.country_name!=nil and  k.to_s==@user.country_name %>      
+         <%=  v %>
+        <% end %>     <% end %> <br>
+       state:  <% CS.states(current_user.country_name).each do |k,v| %>
+        <% if @user.state_name!=nil and  k!=nil and k.to_s.==@user.state_name %>      
+          <%=  v %>
+        <% end %> 
+       <% end %>    	<br>
+       city: <%= @user.city_name %><br>
      </p>
   </h2>
 </div>

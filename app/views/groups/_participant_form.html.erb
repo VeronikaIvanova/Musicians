@@ -1,0 +1,38 @@
+<%= form_for [@group, @instrumentalist_to_group]  do |f| %>
+<div class="field">
+  <select name="user_id">
+      <% User.find(Instrumentalist.distinct.pluck(:user_id)).each do |user| %>
+        <option value="<%= user.id %>"><%= user.firstname %> <%= user.lastname %></option>
+      <% end %>
+  </select>
+ </div>
+ <div class="field">
+  <select name="instrument_id">
+        <option value="">Select instrument</option>
+  </select>
+ </div>
+
+<script>
+$('select[name="user_id"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  console.log("jfhjshdjfs");
+  var instruments=$('select[name="instrument_id"]');
+  $.ajax({
+    type: "GET",
+    url: '/instrument/user/' + $(this).val(),    
+    dataType: 'json',
+    success: function(data){  
+       console.log(data);        
+         console.log(data[0].id);
+      for( var i=0; i<data.length; i++ ){        
+        opt+='<option value='+ data[i].id +'>' + data[i].name+ '</option>'; 
+      } instruments.html(opt);
+    }
+  });
+});
+</script>
+
+  <%= f.submit "Send" %>
+
+<% end %>

@@ -1,0 +1,122 @@
+<%= form_for(@group) do |f| %>
+  <% if @group.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h2>
+
+      <ul>
+      <% @group.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :information %><br>
+    <%= f.text_field :information %>
+  </div>
+   <div class="field">
+
+  <select  name="group[country_name]" >
+    <option value="<%=@group.country_name %>" selected="">
+      <% if @group.country_name!=nil %>
+        <% CS.countries.each do |k,v| %>
+          <% if k.to_s==@group.country_name %>      
+            <%=  v %>
+          <% end %> 
+         <% end %> 
+      <% else %>
+       Select Country      
+      <% end %>       
+   </option>
+      <% CS.countries.each do |k, v| %>
+        <option value="<%= k %>"><%= v %></option>
+      <% end %>
+  </select>  
+ </div>
+
+  <div class="field">
+  <select name="group[state_name]">
+    <option value="<%=@group.state_name %>" selected="">
+       <% if @group.state_name!=nil %>
+        <% CS.states(@group.country_name).each do |k,v| %>
+          <% if  k.to_s==@group.state_name %>      
+            <%=  v %>
+          <% end %> 
+         <% end %> 
+      <% else %>
+       Select State      
+      <% end %>       
+    </option>
+      <% CS.states(@group.country_name).each do |k,v| %>
+        <option value="<%= k %>"><%= v %></option>
+      <% end %>
+  </select>
+ </div>
+
+  <div class="field">
+  <select name="group[city_name]">
+     <option value="<%=@group.city_name %>" selected="">
+       <% if @group.city_name!=nil or @group.city_name=="" %>
+         <%=@group.city_name %>
+       <% else %>
+         Select City
+       <% end %>
+     </option>
+      <% CS.cities(@group.state_name).each do |k,v| %>
+        <option value="<%= k %>"><%= k %></option>
+      <% end %>
+  </select>
+ </div>
+ 
+
+<script>
+$('select[name="group[country_name]"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$('select[name="group[state_name]"]');
+  $('select[name="group[city_name]"]').empty();
+  $.getJSON('/states/' + $(this).val(), function (data) {
+    states.empty();
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ i +'>' + ele + '</option>';     
+    }); states.html(opt);
+  });  
+});
+</script>
+
+
+<script>
+$('select[name="group[state_name]"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$('select[name="group[city_name]"]');
+  $.getJSON('/cities/' + $(this).val(), function (data) {
+    cities.empty();
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele +'>' + ele+ '</option>';     
+    }); cities.html(opt);
+  });
+});
+</script>
+
+ <div class="field">
+   <ul>  
+     <%= f.label :Genres %><br>
+     <% Genre.all.each do |genre| %>
+       <li>   
+          <%= check_box_tag "group[genre_ids][]", genre.id, f.object.genres.include?(genre) %>
+          <%= genre.name%>
+       </li>
+     <% end %>
+  </ul>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+</div>
+<% end %>

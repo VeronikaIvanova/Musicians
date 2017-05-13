@@ -1,5 +1,7 @@
-class ChatsController < ApplicationController
+cclass ChatsController < ApplicationController
+  before_action :authenticate_user! 
   before_action :set_chat, only: [:show, :edit, :update, :destroy]
+  before_action :messages_for_chat, only: [:show]
   
   # GET /chats
   # GET /chats.json
@@ -9,8 +11,7 @@ class ChatsController < ApplicationController
 
   # GET /chats/1
   # GET /chats/1.json
-  def show
-    @messages = Message.where(chat_id: @chat.id)     
+  def show  
     @message=Message.new
   end
  
@@ -76,6 +77,10 @@ class ChatsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def chat_params
       params.require(:chat).permit(:Theme, user_ids: [])
+    end
+    
+    def messages_for_chat
+      @messages = Message.where(chat_id: @chat.id) 
     end
 
 end

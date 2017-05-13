@@ -1,0 +1,7 @@
+ <div id="follow_form">
+  <% if UserToGroup.where(user_id: current_user.id, group_id: @group.id).first!=nil %>
+    <%= render 'unfollow' %>
+  <% else %>
+    <%= render 'follow' %>
+  <% end %>
+  </div>
