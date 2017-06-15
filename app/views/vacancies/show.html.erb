@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+<p>
+  Group  <%= link_to "#{Group.find(@vacancy.group_id).name}", "/groups/#{@vacancy.group_id}" %>
+  Instrument <%= Instrument.find(@vacancy.instrument_id).name %>
+  Info <%= @vacancy.info %> 
+</p>
+<% if Instrumentalist.where(user_id: current_user.id, instrument_id: @vacancy.instrument_id).count>0%>
+<%= render 'follow_form' %>
+<% else %>
+<p> if you want to response the vacancy please add <%= Instrument.find(@vacancy.instrument_id).name %> to 
+ your instruments by editing your profile. </p>
+<% end %>
+
+  <% if UserToGroup.where(user_id: current_user.id,group: @vacancy.group_id, role_id: Role.where(name: "admin").first.id) !=nil %>  
+      <strong>Responses: </strong>
+      <% Answer.where(vacancy_id: @vacancy.id).each do |answer| %>
+	<%= link_to "#{User.find(answer.user_id).firstname}
+         #{User.find(answer.user_id).lastname}", "/users/#{answer.user_id}" %> 
+      <% end %> 
+  <% end %>
+
+<%= link_to 'Edit', edit_vacancy_path(@vacancy) %> |
+<%= link_to 'Back', vacancies_path %>

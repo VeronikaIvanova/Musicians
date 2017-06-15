@@ -1,0 +1,7 @@
+ <div id="follow_form">
+  <% if Answer.where(user_id: current_user.id, vacancy_id: @vacancy.id).first!=nil %>
+    <%= render 'unfollow' %>
+  <% else %>
+    <%= render 'follow' %>
+  <% end %>
+  </div>

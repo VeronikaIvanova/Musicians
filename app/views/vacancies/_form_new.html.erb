@@ -1,0 +1,45 @@
+<%= form_for [@vacancy]  do |f| %>
+  <% if @vacancy.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@vacancy.errors.count, "error") %> prohibited this vacancy from being saved:</h2>
+
+      <ul>
+      <% @vacancy.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if UserToGroup.where(user_id: current_user.id, role_id: Role.where(name: "admin")).count==0 %>
+   <p> You are not admin of any group so you can't create a vacancy.</p>
+  <% else %>
+     <div class="field">  
+    <select  name="vacancy[group_id]" > 
+      <option value="" selected="">Select Group</option>
+        <% Group.find(UserToGroup.where(user_id: current_user.id, role_id: Role.where(name: "admin")).pluck(:group_id)).each do |group| %>
+          <option value="<%= group.id %>"><%= group.name %></option>
+        <% end %>
+    </select>  
+  </div>
+
+  <div class="field">  
+    <select  name="vacancy[instrument_id]" > 
+      <option value="" selected="">Select instrument</option>
+        <% Instrument.all.each do |instrument| %>
+          <option value="<%= instrument.id %>"><%= instrument.name %></option>
+        <% end %>
+    </select>  
+  </div>
+
+
+  <div class="field">
+    <%= f.text_area :info, placeholder: "Compose new message..." %>
+ </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+  <% end %>

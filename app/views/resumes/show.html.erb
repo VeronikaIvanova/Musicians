@@ -3,7 +3,7 @@
 <p>
   <strong>User:</strong>
   <%= link_to "#{User.find(@instrumentalist.user_id).firstname}
-         #{User.find(@instrumentalist.user_id).lastname}", "/users/#{current_user.id}" %>  <br />
+         #{User.find(@instrumentalist.user_id).lastname}", "/users/#{@instrumentalist.user_id}" %>  <br />
 
   <strong>Instrument:</strong>
   <%= Instrument.find(@instrumentalist.instrument_id).name %><br />

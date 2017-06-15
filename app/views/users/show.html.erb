@@ -3,7 +3,7 @@
      <p> <h1>             
       </h1></p>
    <h2>
-     <p> 
+     <p>     <%= image_tag avatar_url(@user) %>
        <%= @user.firstname %> <%= @user.lastname %><br>
        email: <%= @user.email %><br>
        date of birth: <%= @user.date_of_birth %><br>
@@ -22,4 +22,27 @@
        city: <%= @user.city_name %><br>
      </p>
   </h2>
+    <% if current_user.id==@user.id%>
+      <%= render "posts/post_form" %>
+    <% end %> 
+    <% if current_user.id!= @user.id%>
+       <%= render "follow_form" %> 
+    <% else %> 
+     
+    <% end %>
+
+    <% UserNote.where(user_id: @user.id).each do |post| %>
+	 <li>
+	  <span class="content"><%= post.text %></span>
+	  <span class="timestamp">
+	    Posted <%= time_ago_in_words(post.created_at) %> ago.
+	  </span>
+	   <% if current_user.id==post.user_id %>
+	    <%= link_to "delete", post, method: :delete,
+		                             data: { confirm: "You sure?" } %>
+
+	  <% end %>
+	</li>
+    <% end %>
+
 </div>

@@ -1,38 +1,75 @@
 Rails.application.routes.draw do
+  resources :statuses
+  resources :concerts
+  resources :conserts
   resources :roles
   resources :groups
   resources :resumes
   resources :instruments
- 
+  resources :vacancies
   resources :genres
   resources :genders
   resources :instruments
+  resources :user_notes, only: [:create, :destroy]
+  resources :group_notes, only: [:destroy]
+  devise_for :users
+  resources :users, only: [:index]
+
+  resources :users do
+    resources :friends, :only=>[:new, :create]
+  end
+
+  resources :groups do
+    resources :instrumentalist_to_groups, :only=>[:new, :create]
+    resources :user_to_groups, :only=>[:new, :create]
+    resources :vacancies, :only=>[:new, :create]
+    resources :group_notes, :only=>[:new, :create]
+  end
+  resources :concerts do
+    resources :concert_followers, :only=>[:new, :create]
+    resources :concert_participants, :only=>[:new, :create]
+    resources :concert_notes, :only=>[:new, :create]
+  end
 
   resources :chats do
     resources :messages, :only=>[:new, :create]
   end
 
-  devise_for :users
+  resources :vacancies do
+    resources :answers, :only=>[:new, :create]
+  end
 
+  resources :concert_followers, only: [:destroy]
+  resources :concert_participants, only: [:destroy]
+  resources :concert_notes, only: [:destroy]
+  resources :friends, only: [:destroy]
   resources :messages, only: [:destroy]
   resources :instrumentalist_to_groups, only: [:destroy]
   resources :user_to_groups, only: [:destroy]
+  resources :answers, only: [:destroy]
 
-  resources :groups do
-    resources :instrumentalist_to_groups, :only=>[:new, :create]
-    resources :user_to_groups, :only=>[:new, :create]
-  end
  
-  get 'instrument/user/:user_id', to: 'application#instruments'	
+  get '/instrument/user/:user_id', to: 'application#instruments'	
   get 'cities/:states', to: 'application#cities'
   get 'states/:countries', to: 'application#states'
   get 'countries', to: 'application#countries'
   root 'static#index'
+
+  get '/concerts/:concert_id/group/:group_id' => "request_groups#add"
+  get '/request/:id' => "friends#add"
   post "/chats/:chat_id/messages" => "messages#create"
   post "/groups/:group_id/instrumentalist_to_groups" => "instrumentalist_to_groups#create"
   post "/groups/:group_id/user_to_groups" => "user_to_groups#create"
   match '/users/:id', to: 'users#show' ,  via: 'get'
-  match '/users/',    to: 'users#index',  via: 'get'
+
+  get '/user_friends/' => "sidebars#friends"
+  get '/user_groups/' => "sidebars#groups"
+  get '/user_concerts/' => "sidebars#concerts"
+  get '/feeds/' => "sidebars#feeds"
+
+  get '/user_friends/requests' => "sidebars#friends_requests"
+  get '/user_groups/admins' => "sidebars#groups_admins"
+  get '/user_concerts/admins' => "sidebars#concerts_admins"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -22,6 +22,16 @@ class User < ActiveRecord::Base
   has_many :chat_participants
   has_many :chats, through: :chat_participants
 
-  
+  has_many :answers, :dependent => :delete_all
+  has_many :vacancies, through: :answers
+
+  has_many :user_notes, :dependent => :delete_all
+  has_many :group_notes, :dependent => :delete_all
+
+
+  has_many :concert_followers, :dependent => :delete_all
+  has_many :concerts, through: :concert_followers
+
+  has_many :concert_notes, :dependent => :delete_all
 
 end

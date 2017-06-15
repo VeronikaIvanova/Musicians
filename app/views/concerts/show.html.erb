@@ -1,0 +1,116 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @concert.name %>
+</p>
+
+<p>
+  <strong>Place:</strong>
+  <%= @concert.place %>
+</p>
+
+<p>
+  <strong>Date:</strong>
+  <%= @concert.date %>
+</p>
+
+<p>
+  <strong>City:</strong>
+  <%= @concert.city %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @concert.state %>
+</p>
+
+<p>
+  <strong>Country:</strong>
+  <%= @concert.country %>
+</p>
+
+ <% if ConcertFollower.where(user_id: current_user.id, concert: @concert.id, role_id: Role.where(name: "admin").first.id).first !=nil %>  
+   <div class="field">
+      <strong>Participants: </strong>
+       <ul>
+        <% Group.find(ConcertParticipant.where(concert_id: @concert.id, status_id: Status.where(name:"agreed").first.id).pluck(:group_id)).each do |group| %>
+         <li> 
+           <%= link_to "#{group.name}", "/groups/#{group.id}" %>        
+           <%= link_to 'Destroy',ConcertParticipant.where(concert_id: @concert.id, group_id: group.id).first , method: :delete, data: { confirm: 'Are you sure?' } %>     
+         </li>
+         <% end %>
+        </ul>  
+    </div>   
+
+ <div>
+    <strong> Requests: <strong> 
+    <% Group.find(ConcertParticipant.where(concert_id: @concert.id, status_id: Status.where(name:"request").first.id).pluck(:group_id)).each do |group| %>
+     <li> 
+           <%= link_to "#{group.name}", "/groups/#{group.id}" %> 
+             
+           <%= link_to 'Add',"/concerts/#{@concert.id}/group/#{group.id}" , method: :get %>   
+           <%= link_to 'Destroy',ConcertParticipant.where(concert_id: @concert.id, group_id: group.id).first , method: :delete, data: { confirm: 'Are you sure?' } %>       
+     </li>
+ <div>
+ <% end %>
+ <% else %> 
+  <div class="field">
+      <strong>Participants: </strong>
+       <ul>
+       <% Group.find(ConcertParticipant.where(concert_id: @concert.id, status_id: Status.where(name:"agreed").first.id).pluck(:group_id)).each do |group| %>
+         <li> 
+           <%= link_to "#{group.name}", "/groups/#{group.id}" %>            
+         </li>
+       <% end %>
+      
+  </div>   
+<div>
+    <strong> Requests: <strong> 
+    <% ConcertParticipant.where(concert_id: @concert.id, status_id: Status.where(name:"agreed").first.id).each do |request| %>
+     <li>  
+           <%= link_to "#{Group.find(request.group_id).name}", "/groups/#{request.group_id}" %>  
+           <% if UserToGroup.where(group_id: request.group_id, user_id: current_user.id, role_id: Role.where(name: "admin").first.id).first!=nil %>
+             <%= link_to 'Destroy',ConcertParticipant.where(concert_id: @concert.id, group_id: request.group_id).first , method: :delete, data: { confirm: 'Are you sure?' } %>       
+         <% end %>
+    </li> <% end %>
+ <div>
+ <% end %>
+  <input type="button" onclick="addPart()" value="Add Participant!"/>
+    <div id="form_participants_concert" style = "display:none">
+       <%= render 'participant_form' %>
+    </div></div>
+
+
+<%= render 'follow_form' %>
+
+ <%= render "posts/concert_form" %>
+    
+    <% ConcertNote.where(concert_id: @concert.id).each do |post| %>
+	 <li>
+          <span class="content"><%= User.find(post.user_id).firstname %> <%= User.find(post.user_id).lastname %></span>
+	  <span class="content"><%= post.text %></span>
+	  <span class="timestamp">
+	    Posted <%= time_ago_in_words(post.created_at) %> ago.
+	  </span>
+	   <% if current_user.id==post.user_id  || ConcertFollower.where(user_id: current_user.id, concert_id: @concert.id, role_id: Role.where(name: "admin").take.id)!=nil %>
+	    <%= link_to "delete", post, method: :delete,
+		                             data: { confirm: "You sure?" } %>
+
+	  <% end %>
+	</li>
+    <% end %>
+
+<%= link_to 'Edit', edit_concert_path(@concert) %> |
+<%= link_to 'Back', concerts_path %>
+
+<script type="text/javascript">
+   function addPart() {
+     var div = document.getElementById('form_participants_concert');
+     div.style.display = 'block';
+
+}
+</script>
+
+</script>
+

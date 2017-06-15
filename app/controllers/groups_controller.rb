@@ -6,6 +6,32 @@ class GroupsController < ApplicationController
   # GET /groups.json
   def index
     @groups = Group.all
+    @genres = Genre.all
+
+    if !params[:genres].blank?
+      genres = params[:genres]
+      @groups=Group.find(GroupToGenre.where(:genre_id=> genres).pluck(:group_id))
+    end
+
+    if !params[:name].blank?
+      @groups=params[:name]
+      @groups=@groups.where("name like :name ",name: "%#{@name}%")
+    end
+
+    if !params[:country_name].blank?
+      country=params[:country_name]
+      @groups = @groups.where(:country_name=> country)
+    end
+
+    if !params[:state_name].blank?
+      state=params[:state_name]
+      @groups = @groups.where(:state_name => state)
+    end
+
+    if !params[:city_name].blank?
+      city=params[:city_name]
+      @groups= @groups.where(:city_name => city)
+    end
   end
 
   # GET /groups/1
@@ -16,13 +42,14 @@ class GroupsController < ApplicationController
     if @user_to_group==nil
       @user_to_group=UserToGroup.new
     end
+   @vacancy=Vacancy.new
+   @group_note=GroupNote.new
   end
 
   # GET /groups/new
   def new
     @group = Group.new
     @instrumentalist_to_group=InstrumentalistToGroup.new
- 
   end
 
   # GET /groups/1/edit

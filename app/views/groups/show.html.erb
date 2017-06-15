@@ -14,8 +14,8 @@
         <% if @group.country_name!=nil and  k.to_s==@group.country_name %>      
          <%=  v %>
         <% end %>     <% end %> <br></p>
-<p><strong> state: </strong> <% CS.states(current_user.country_name).each do |k,v| %>
-        <% if @group.state_name!=nil and  k!=nil and k.to_s.==@group.state_name %>      
+<p><strong> state: </strong> <% CS.states(@group.country_name).each do |k,v| %>
+        <% if @group.state_name!=nil and  k!=nil and k.to_s==@group.state_name %>      
           <%=  v %>
         <% end %> 
        <% end %>    	<br></p>
@@ -26,12 +26,13 @@
       <strong>Participants: </strong>
        <ul>
        <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
-       <li>        
-          <%= User.find(instrumentalist.user_id).firstname %> <%= User.find(instrumentalist.user_id).lastname%>
+       <li>      
+         <%= link_to "#{User.find(instrumentalist.user_id).firstname}
+         #{User.find(instrumentalist.user_id).lastname}", "/users/#{instrumentalist.user_id}" %> 
           <%= Instrument.find(instrumentalist.instrument_id).name %>       
           <%= link_to 'Destroy', InstrumentalistToGroup.where(group_id: @group.id,instrumentalist_id:instrumentalist.id).first, method: :delete, data: { confirm: 'Are you sure?' } %>     
-     </li>
-     <% end %>
+       </li>
+       <% end %>
       </ul> 
  </div>   
 
@@ -39,6 +40,9 @@
 <div id="form_participants" style = "display:none">
   <%= render 'participant_form' %>
 </div>
+
+<%= link_to 'new vacancy', new_group_vacancy_path(@group.id) %> 
+
 
 <%else %> 
 <div class="field">
@@ -53,14 +57,39 @@
       </ul> 
  </div>   
 <% end %>
+<% if Vacancy.where(group_id: @group.id).count>0 %>
+  <strong>vacancies: </strong>
+  <% Vacancy.where(group_id: @group.id).each do |vacancy|%>
+    <%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %>     
+  <% end %>
+<% end %>
 <%= render 'follow_form' %>
+
+      <%= render "posts/group_form" %>
+    
+    <% GroupNote.where(group_id: @group.id).each do |post| %>
+	 <li>
+          <span class="content"><%= User.find(post.user_id).firstname %> <%= User.find(post.user_id).lastname %></span>
+	  <span class="content"><%= post.text %></span>
+	  <span class="timestamp">
+	    Posted <%= time_ago_in_words(post.created_at) %> ago.
+	  </span>
+	   <% if current_user.id==post.user_id  || UserToGroup.where(user_id: current_user.id, group_id: @group.id, role_id: Role.where(name: "admin").take.id)!=nil %>
+	    <%= link_to "delete", post, method: :delete,
+		                             data: { confirm: "You sure?" } %>
+
+	  <% end %>
+	</li>
+    <% end %>
 <%= link_to 'Edit', edit_group_path(@group) %> |
 <%= link_to 'Back', groups_path %>
+
 
 
 <script type="text/javascript">
    function add() {
      var div = document.getElementById('form_participants');
      div.style.display = 'block';
+
 }
 </script>

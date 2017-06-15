@@ -1,5 +1,6 @@
 class MessagesController < ApplicationController
   before_action :authenticate_user! 
+  respond_to :html, :js
   def new
   end
 
@@ -7,9 +8,11 @@ class MessagesController < ApplicationController
     @message = current_user.messages.build(message_params)
     @chat= Chat.find(params[:chat_id])
     @message.chat_id=@chat.id  
-    @message.save
+      if @message.save
+        sync_new @message
+      end
     redirect_to :back
-  end
+ end
 
   def destroy
     @message= Message.find(params[:id])

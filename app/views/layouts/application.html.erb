@@ -4,8 +4,7 @@
   <title>Musicians</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-
+  <%= include_sync_config %>
 </head>
 <body>
    <header class="navbar navbar-inverse navbar-fixed-top">
@@ -13,22 +12,25 @@
          <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
-          </button>
-          <a class="navbar-brand" href="#">MakeBand!</a>
+          </button>   
 	 </div>
 	<div id="navbar" class="collapse navbar-collapse"> 
           <% if user_signed_in? %>
-            <ul class="nav navbar-nav">       
-	      <li> <%= link_to " #{current_user.id}", "/users/#{current_user.id}"   %> 
+            <ul class="nav navbar-nav">   
+              <li><%= link_to "MakeBand!", "/feeds/" %>  </li>    
 	      <li><%= link_to "Musicians", "/users/"  %> </li>   
-              <li><%= link_to "Chats", "/chats/"  %> </li>     
-              <li><%= link_to "Resumes", "/resumes/"  %> </li> 
+              <li><%= link_to "Groups", "/groups/"  %> </li> 
+              <li><%= link_to "Resumes", "/resumes/"  %> </li>           
+              <li><%= link_to "Vacancies", "/vacancies/"  %> </li> 
+              <li><%= link_to "Concerts", "/concerts/"  %> </li>             
             </ul>
              <ul class="nav navbar-nav navbar-right">
                <li><%= link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link' %></li>
                <li> <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link' %> </li>
 	     </ul>
           <% else %>
+               <ul class="nav navbar-nav">   
+              <li><%= link_to "MakeBand!", "/feeds/" %> </li> </ul>
              <ul class="nav navbar-nav navbar-right">
                <li><%= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %> </li>
                <li> <%= link_to "Login", new_user_session_path, :class => 'navbar-link'  %>  </li>
@@ -36,9 +38,33 @@
           <%end %>
 	</div>
       </div>
-    </header>
-<div class="jumbotron">
-<%= yield %>
+</header>
+ <div id="wrapper" data-spy="scroll" data-target="#spy" class="">
+  <% if user_signed_in? %>
+    <div id="sidebar-wrapper" class="navbar navbar-inverse navbar-fixed-top">
+        <nav id="spy">
+            <ul class="sidebar-nav nav">
+              <li class="sidebar-brand active"> <a href="#home" class=""><span class="fa fa-home solo">Home</span></a> </li>
+               <li> <%= link_to " #{current_user.firstname}", "/users/#{current_user.id}"   %> 
+              <li class=""><%= link_to "Feeds", "/feeds/"  %> </li> 
+              <li class=""><%= link_to "Chats", "/chats/"  %> </li>     
+              <li class=""><%= link_to "Friends", "/user_friends/"  %> </li> 
+              <li class=""><%= link_to "Groups", "/user_groups/"  %> </li> 
+              <li class=""><%= link_to "Concerts", "/user_concerts/"  %> </li> 
+            </ul>
+        </nav>
+    </div>
+  <% end %>
+
+<div id="page-content-wrapper" class="">
+  <div class="page-content inset">
+            <div class="row">
+             <div class="jumbotron text-center">
+              <%= yield %>
+       </div> </div>
+   </div>
+  </div>
 </div>
+                   
 </body>
 </html>

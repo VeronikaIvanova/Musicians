@@ -1,23 +1,13 @@
-<p id="notice"><%= notice %></p>
+<div>
+  <h1><%= @chat.Theme %></h1>
 
-<p>
-  <strong>Theme:</strong>
-  <%= @chat.Theme %>
-</p>
+ <%= render 'message_form' %>
 
-<% @messages.each  do |message| %>
-  <p> 
-    Created at:  <%= message.created_at %><br />
-    Sender:  <%= User.find(message.user_id).firstname %> <%= User.find(message.user_id).lastname %> <br />
-    Text: <%= message.text %><br />
-    <% if message.user_id==current_user.id  %> 
-      <%= link_to 'Destroy', message, method: :delete, data: { confirm: 'Are you sure?' } %>
-    <% end %>  <br />
-    
-  </p>
-<% end %>
-
-<%= render 'message_form' %>
+  <% if @chat.messages.any? %>
+     <%= sync partial: 'message_row', collection: @chat.messages %>
+     <%= sync_new partial: 'message_row', resource: Message.new %>
+  <%end%>
 
 <%= link_to 'Edit', edit_chat_path(@chat) %> |
 <%= link_to 'Back', chats_path %>
+</div>

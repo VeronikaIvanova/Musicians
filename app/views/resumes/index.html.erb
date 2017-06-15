@@ -1,5 +1,66 @@
 <p id="notice"><%= notice %></p>
+<div class="search">
+  <%= form_tag(resumes_path, :method => "get", class: "navbar-form", id: "search-form") do %>
+    
 
+ <select  name="country_name" >
+    <option value="" selected="">Select Country</option>
+      <% CS.countries.each do |key, value| %>
+        <option value="<%= key %>"><%= value %></option>
+      <% end %>
+  </select>  
+ 
+  <select name="state_name">
+    <option value="" selected="">Select State</option>
+  </select>
+
+  <select name="city_name">
+    <option value="">Select City</option>
+  </select>
+
+  <ul>Instuments
+   <% @instruments.each do |instrument| %>
+     <li>
+        <%= check_box_tag 'instruments', instrument.id -%>
+        <%= instrument.name-%>
+     </li>
+     <% end %>
+  </ul>
+
+
+<script>
+$('select[name="country_name"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$('select[name="state_name"]');
+  $.getJSON('/states/' + $(this).val(), function (data) {
+    states.empty();
+    opt= '<option value="" selected="">Select State</option>'
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ i +'>' + ele + '</option>';     
+    }); states.html(opt);
+  });
+});
+</script>
+
+
+<script>
+$('select[name="state_name"]').change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$('select[name="city_name"]');
+  $.getJSON('/cities/' + $(this).val(), function (data) {
+    cities.empty();
+    opt= '<option value="" selected="">Select City</option>'
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele +'>' + ele+ '</option>';     
+    }); cities.html(opt);
+  });
+});
+</script>
+      <button class="btn" type="submit">Search</button>
+<% end %>
+</div>
 <h1>Listing Resumes</h1>
 
 <table>

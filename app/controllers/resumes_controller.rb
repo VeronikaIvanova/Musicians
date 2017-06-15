@@ -5,7 +5,30 @@ class ResumesController < ApplicationController
   # GET /resumes
   # GET /resumes.json
   def index
-    @resumes = Resume.all
+    @resumes = Resume.all 
+    @instruments = Instrument.all
+
+
+    if !params[:instruments].blank?
+      instruments = params[:instruments]
+      @resumes=@resumes.where(:instrumentalist_id => Instrumentalist.where(:instrument_id => instruments).pluck(:id))
+    end
+
+
+    if !params[:country_name].blank?
+      country=params[:country_name]
+      @resumes = @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(country_name: country).pluck(:id)).pluck(:id))
+    end
+
+    if !params[:state_name].blank?
+      state=params[:state_name]
+      @resumes = @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(state_name: state).pluck(:id)).pluck(:id))
+    end
+
+    if !params[:city_name].blank?
+      city=params[:city_name]
+      @resumes= @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(city_name: city).pluck(:id)).pluck(:id))
+    end
   end
 
   # GET /resumes/1

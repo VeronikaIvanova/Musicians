@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170512181538) do
+ActiveRecord::Schema.define(version: 20170614110349) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "answers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "vacancy_id"
+    t.integer  "user_id"
+    t.text     "info"
+  end
 
   create_table "chat_participants", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -32,10 +40,53 @@ ActiveRecord::Schema.define(version: 20170512181538) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "concert_followers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.integer  "concert_id"
+    t.integer  "role_id"
+  end
+
+  create_table "concert_notes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.text     "text"
+    t.integer  "concert_id"
+  end
+
+  create_table "concert_participants", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "group_id"
+    t.integer  "concert_id"
+    t.integer  "status_id"
+  end
+
+  create_table "concerts", force: :cascade do |t|
+    t.string   "name"
+    t.string   "place"
+    t.datetime "date"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "controllers", force: :cascade do |t|
     t.string   "Instruments"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "friends", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user1"
+    t.integer  "user2"
+    t.integer  "status_id"
   end
 
   create_table "genders", force: :cascade do |t|
@@ -48,6 +99,14 @@ ActiveRecord::Schema.define(version: 20170512181538) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "group_notes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.text     "text"
+    t.integer  "group_id"
   end
 
   create_table "group_to_genres", force: :cascade do |t|
@@ -102,6 +161,14 @@ ActiveRecord::Schema.define(version: 20170512181538) do
   add_index "messages", ["chat_id"], name: "index_messages_on_chat_id", using: :btree
   add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
 
+  create_table "request_groups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "group_id"
+    t.integer  "concert_id"
+    t.integer  "count"
+  end
+
   create_table "resume_genres", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -122,6 +189,12 @@ ActiveRecord::Schema.define(version: 20170512181538) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "statuses", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "name"
+  end
+
   create_table "user_genres", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -131,6 +204,13 @@ ActiveRecord::Schema.define(version: 20170512181538) do
 
   add_index "user_genres", ["genre_id"], name: "index_user_genres_on_genre_id", using: :btree
   add_index "user_genres", ["user_id"], name: "index_user_genres_on_user_id", using: :btree
+
+  create_table "user_notes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.text     "text"
+  end
 
   create_table "user_to_groups", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -168,8 +248,31 @@ ActiveRecord::Schema.define(version: 20170512181538) do
   add_index "users", ["gender_id"], name: "index_users_on_gender_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  create_table "vacancies", force: :cascade do |t|
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "group_id"
+    t.integer  "instrument_id"
+    t.text     "info"
+  end
+
+  add_foreign_key "answers", "users"
+  add_foreign_key "answers", "vacancies"
   add_foreign_key "chat_participants", "chats"
   add_foreign_key "chat_participants", "users"
+  add_foreign_key "concert_followers", "concerts"
+  add_foreign_key "concert_followers", "roles"
+  add_foreign_key "concert_followers", "users"
+  add_foreign_key "concert_notes", "concerts"
+  add_foreign_key "concert_notes", "users"
+  add_foreign_key "concert_participants", "concerts"
+  add_foreign_key "concert_participants", "groups"
+  add_foreign_key "concert_participants", "statuses"
+  add_foreign_key "friends", "statuses"
+  add_foreign_key "friends", "users", column: "user1"
+  add_foreign_key "friends", "users", column: "user2"
+  add_foreign_key "group_notes", "groups"
+  add_foreign_key "group_notes", "users"
   add_foreign_key "group_to_genres", "genres"
   add_foreign_key "group_to_genres", "groups"
   add_foreign_key "instrumentalist_to_groups", "groups"
@@ -178,14 +281,19 @@ ActiveRecord::Schema.define(version: 20170512181538) do
   add_foreign_key "instrumentalists", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
+  add_foreign_key "request_groups", "concerts"
+  add_foreign_key "request_groups", "groups"
   add_foreign_key "resume_genres", "genres"
   add_foreign_key "resume_genres", "resumes"
   add_foreign_key "resumes", "instrumentalists"
   add_foreign_key "user_genres", "genres"
   add_foreign_key "user_genres", "users"
+  add_foreign_key "user_notes", "users"
   add_foreign_key "user_to_groups", "groups"
   add_foreign_key "user_to_groups", "roles"
   add_foreign_key "user_to_groups", "users"
   add_foreign_key "users", "genders"
   add_foreign_key "users", "roles"
+  add_foreign_key "vacancies", "groups"
+  add_foreign_key "vacancies", "instruments"
 end

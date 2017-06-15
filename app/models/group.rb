@@ -7,4 +7,10 @@ class Group < ActiveRecord::Base
 
   has_many :group_to_genres, :dependent => :delete_all
   has_many :genres, through: :group_to_genres
+  has_many :vacancies, :dependent => :delete_all
+  has_many :group_notes, :dependent => :delete_all
+
+  has_many :concert_participants, :dependent => :delete_all
+  has_many :concerts, through: :concert_participants
+
 end

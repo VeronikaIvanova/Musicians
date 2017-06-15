@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs">
+  <li role="presentation"><a href="/user_friends/">Friends</a></li>
+  <li role="presentation"class="active"><a href="/user_friends/requests/">Requests</a></li>
+</ul>
+
+   <% if @requests!=nil and @requests.count>0 %>
+      <% @requests.each do |request| %>
+            <%= link_to "#{User.find(request.user2).firstname} #{User.find(request.user2).lastname}",
+               "/users/#{request.user2}" %>
+         <%= button_to "Add","/request/#{request.id}" ,
+             :class => "btn btn-large", :method => :get %>
+         <%= button_to "Destroy","/friends/#{request.id}" ,
+             :class => "btn btn-large", :method => :delete %>
+      <% end %>
+   <% else %> <p> You have no requests </p>
+   <% end %>
