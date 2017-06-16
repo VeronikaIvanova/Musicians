@@ -5,8 +5,9 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= include_sync_config %>
+  <%= csrf_meta_tags %>
 </head>
-<body>
+<body bgcolor="#AAAAAA" >
    <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
          <div class="navbar-header">
@@ -58,11 +59,11 @@
 
 <div id="page-content-wrapper" class="">
   <div class="page-content inset">
-            <div class="row">
-             <div class="jumbotron text-center">
-              <%= yield %>
-       </div> </div>
-   </div>
+           <div class="row">
+             <div class="jumbotron"">
+               <%= yield %>
+             </div> 
+           </div>
   </div>
 </div>
                    

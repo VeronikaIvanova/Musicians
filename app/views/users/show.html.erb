@@ -1,39 +1,81 @@
-
-<div class="row">
-     <p> <h1>             
-      </h1></p>
-   <h2>
-     <p>     <%= image_tag avatar_url(@user) %>
-       <%= @user.firstname %> <%= @user.lastname %><br>
-       email: <%= @user.email %><br>
-       date of birth: <%= @user.date_of_birth %><br>
-       info: <%= @user.info %><br>
-       <% if @user.gender!=nil %>
-       gender: <%= Gender.find(@user.gender).name %><br> <%end %>
-       country: <% CS.countries.each do |k,v| %>
-        <% if @user.country_name!=nil and  k.to_s==@user.country_name %>      
-         <%=  v %>
-        <% end %>     <% end %> <br>
-       state:  <% CS.states(current_user.country_name).each do |k,v| %>
-        <% if @user.state_name!=nil and  k!=nil and k.to_s.==@user.state_name %>      
-          <%=  v %>
-        <% end %> 
-       <% end %>    	<br>
-       city: <%= @user.city_name %><br>
-     </p>
-  </h2>
-    <% if current_user.id==@user.id%>
-      <%= render "posts/post_form" %>
-    <% end %> 
+<div class="user_name">
+  <p> <%= image_tag avatar_url(@user) %>
+  <%= @user.firstname %> <%= @user.lastname %> <h3></p>
+ 
     <% if current_user.id!= @user.id%>
-       <%= render "follow_form" %> 
-    <% else %> 
-     
-    <% end %>
+      <table>
+        <tr> 
+         <td><%= render "follow_form" %> </td>
+         <td><%= button_to "New chat", "/users/#{@user.id}/write" ,
+          :class => "btn btn-large btn-primary", :method => :get %> </td>
+        </tr>
+      </table>      
+    <% else %>       
+        <%= render "posts/post_form" %>
+    <% end %> 
+</div>
+<div class= "user_info">   
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"> Information </h3>
+      </div>
+      <div class="panel-body">
+        <table>       
+            <tr><td align="right"> email:</td> <td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.email %><br></td> </tr>
+            <% if @user.date_of_birth!=nil %>
+              <tr><td align="right"> date of birth:</td> <td>&nbsp;&nbsp;&nbsp;</td><td align="left"> <%= @user.date_of_birth.strftime('%-d %B %Y') %><br></td> </tr>
+            <% end %>
+            <% if @user.gender!=nil %>
+              <tr><td align="right"> gender:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.gender.name %></td>  </tr>
+            <% end %>  
+            <% if @user.country_name!="" and @user.country_name!=nil %>         
+              <tr><td align="right"> country:</td> <td>&nbsp;&nbsp;&nbsp;</td><td align="left">  <% CS.countries.each do |k,v| %>
+                                  <% if @user.country_name!=nil and  k.to_s==@user.country_name %>  
+                                  <%=  v %>  <% end %>  <% end %>   </td>   </tr>
+            <% end %>  
+            <% if @user.state_name!="" and @user.state_name!=nil %> 
+               <tr><td align="right"> state:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <% CS.states(current_user.country_name).each do |k,v| %>
+                                           <% if @user.state_name!=nil and  k!=nil and k.to_s.==@user.state_name %>      
+                                           <%=  v %>  <% end %>  <% end %>   </td>   </tr>
+            <% end %>  
+            <% if @user.city_name!="" and @user.city_name!=nil %> 
+               <tr><td align="right"> city:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.city_name %></td>  </tr>
+            <% end %>  
+            <% if @user.info!="" and @user.info!=nil %>     
+               <tr><td align="right"> info:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.info%></td>    </tr>                              
+            <% end %>  
+        </table>
+    </div>
+  </div>
+</div>
+<% if  Group.find(UserToGroup.where(user_id: @user.id, role: Role.where(name: "admin").first.id).pluck(:group_id)).count>0 %>   
+  <div class= "user_groups">   
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"> Groups </h3>
+      </div>
+      <div class="panel-body">
+        <table>                  
+               <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> <td align="left">  
+               <% Group.find(UserToGroup.where(user_id: @user.id, role: Role.where(name: "admin").first.id).pluck(:group_id)).each do |group| %> 
+                 <%= link_to "#{group.name}", group_path(group.id) %> </br>
+               <% end %> </td> </tr>
+        </table>
+    </div>
+  </div>
+ </div>
+<% end %>  
 
-    <% UserNote.where(user_id: @user.id).each do |post| %>
-	 <li>
-	  <span class="content"><%= post.text %></span>
+ <% if @posts.count>0 %>
+<div class="user_posts">
+<div class="panel panel-default"> 
+<div class="panel-heading"><table width="100%">
+       <tr><td width="30%"> <h3 class="panel-title"> Posts </h3></td>
+      <td align="right">  <%= will_paginate @posts %> </td></tr></table>
+  <ul class="list-group"> 
+        <% @posts.each do |post| %>
+	  <li class="list-group-item">
+	  <span class="content"><%= post.text %></span><br />
 	  <span class="timestamp">
 	    Posted <%= time_ago_in_words(post.created_at) %> ago.
 	  </span>
@@ -44,5 +86,8 @@
 	  <% end %>
 	</li>
     <% end %>
-
+  </ul>
+ </div>
+</div> 
 </div>
+<% end %>

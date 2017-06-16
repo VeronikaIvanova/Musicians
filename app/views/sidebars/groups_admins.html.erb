@@ -1,0 +1,13 @@
+<ul class="nav nav-tabs">
+  <li role="presentation"><a href="/user_groups/">Subscriptions</a></li>
+  <li role="presentation"class="active"><a href="/user_groups/admins/">Administrations</a></li>
+</ul>
+
+<div class="row">
+<% @groups_admin.each do |group| %>
+<p> <%= link_to "#{group.name}", group_path(group.id) %>  
+    <%= button_to  'Edit', edit_group_path(group), :class => "btn btn-large", method: :get %>
+    <%= button_to  'Destroy', group, method: :delete, :class => "btn btn-large", data: { confirm: 'Are you sure?' } %> </p>
+<% end %>
+
+</div >

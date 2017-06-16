@@ -1,9 +1,22 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
+@import "users";
+@import "chats";
+@import "rails_bootstrap_forms";
+@import "bootstrap-select";
+/*
+ *= require rails_bootstrap_forms
+
+ */
 
 #comments {
   max-height: 500px;
   overflow: auto;
+}
+
+
+.jumbotron{
+  background: rgba( 255, 0, 0, 0);
 }
 
  #wrapper {

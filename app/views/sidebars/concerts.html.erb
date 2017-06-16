@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs">
+  <li role="presentation"class="active"><a href="/user_concerts/">Subscriptions</a></li>
+  <li role="presentation"><a href="/user_concerts/admins/">Administrations</a></li>
+</ul>
+<ul>
+<% @concerts.each do |concert| %>
+<li> <%= link_to "#{concert.name}", concert_path(concert.id) %>  
+     <%= button_to "Unfollow", concert_follower_path(concert.id),
+      :class => "btn btn-large", :method => :delete %> </li>
+<% end %>
+</ul>

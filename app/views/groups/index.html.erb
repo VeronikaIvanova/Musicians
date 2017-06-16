@@ -65,33 +65,11 @@ $('select[name="state_name"]').change(function() {
 
 <h1>Listing Groups</h1>
 <table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Information</th>
-      <th>City name</th>
-      <th>State name</th>
-      <th>Country name</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
     <% @groups.each do |group| %>
       <tr>
-        <td><%= group.name %></td>
-        <td><%= group.information %></td>
-        <td><%= group.city_name %></td>
-        <td><%= group.state_name %></td>
-        <td><%= group.country_name %></td>
-        <td><%= link_to 'Show', group %></td> 
-        <% if UserToGroup.where(user_id: current_user.id, group_id: group.id, role_id: Role.where(name: "admin").take.id).order(created_at: :desc).first  !=nil %>  
-          <td><%= link_to 'Edit', edit_group_path(group) %></td>
-          <td><%= link_to 'Destroy', group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <% end %>
+        <td><%=link_to "#{group.name}", group_path(group.id) %></td>
       </tr>
     <% end %>
-  </tbody>
 </table>
 
 <br>

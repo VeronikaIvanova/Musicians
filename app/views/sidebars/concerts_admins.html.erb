@@ -1,0 +1,13 @@
+<ul class="nav nav-tabs">
+  <li role="presentation"><a href="/user_groups/">Subscriptions</a></li>
+  <li role="presentation"class="active"><a href="/user_groups/admins/">Administrations</a></li>
+</ul>
+
+<div class="row">
+<% @concerts_admin.each do |concert| %>
+<p> <%= link_to "#{concert.name}", concert_path(concert.id) %>  
+    <%= button_to  'Edit', edit_concert_path(concert), :class => "btn btn-large", method: :get %>
+    <%= button_to  'Destroy', concert, method: :delete, :class => "btn btn-large", data: { confirm: 'Are you sure?' } %> </p>
+<% end %>
+
+</div >

@@ -1,13 +1,22 @@
-<div>
-  <h1><%= @chat.Theme %></h1>
 
- <%= render 'message_form' %>
+<div class="chat">
+<div class="panel panel-default"> 
+    <div class="panel-heading"> <table width="100%" height="100%" > 
+       <tr><td width="40%"><h3 class="panel-title"><%= @chat.Theme %></h3></td>
+         <td align="right"  width="60%" > </td></tr> </table>
+      </div> 
 
-  <% if @chat.messages.any? %>
-     <%= sync partial: 'message_row', collection: @chat.messages %>
-     <%= sync_new partial: 'message_row', resource: Message.new %>
-  <%end%>
+ <% if @messages.any? %>
+  <ul class="list-group"> 
+     <%= sync partial: 'message_row', collection:  @messages%> 
+     <%= sync_new partial: 'message_row', resource: Message.new %> 
+  </ul> 
+ <%end%>
+ <div class="panel-heading" align="right">  <%= will_paginate @messages %> 
+      </div> 
 
-<%= link_to 'Edit', edit_chat_path(@chat) %> |
-<%= link_to 'Back', chats_path %>
-</div>
+ </div>
+</div> 
+  <div class="message_form" align="right" >
+    <%= render 'message_form' %>
+  </div>

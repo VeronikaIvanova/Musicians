@@ -1,8 +1,9 @@
 
-<%  @chat.messages.each do |message| %>
-<li>
-  <%= link_to "#{message.user.firstname} #{message.user.lastname}",user_path(message.user.id) %>
-     [ <%= message.created_at.strftime('%-d %B %Y, %H:%M:%S') %>]
-    <p><%= message.text %></p>
+<li class="list-group-item">
+  <%= link_to "#{message.user.firstname} #{message.user.lastname}",
+      user_path(message.user.id) %>   <span class="timestamp"> at 
+   <%= message.created_at.strftime('%-d %b %y, %H:%M:%S') %></span> </br>
+  <%= message.text %> 
+
 </li>
-<% end %>
+

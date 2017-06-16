@@ -1,15 +1,16 @@
-<h2>Log in</h2>
+<div class="header_edit">
+ <h3>Log in</h3>
+</div>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+<div class="editing" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-body">
+
+<%= bootstrap_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
   <div class="field">
-    <%= f.label :email %><br />
     <%= f.email_field :email, autofocus: true %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
     <%= f.password_field :password, autocomplete: "off" %>
-  </div>
+
 
   <% if devise_mapping.rememberable? -%>
     <div class="field">
@@ -22,5 +23,8 @@
     <%= f.submit "Log in" %>
   </div>
 <% end %>
-
 <%= render "users/shared/links" %>
+ </div>
+  </div>
+</div>
+

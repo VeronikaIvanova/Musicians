@@ -1,0 +1,35 @@
+// Place all the styles related to the Users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.user_name {
+  width: 340px;
+
+}
+.user_info {
+  width: 500px;
+  position: absolute;
+  top: 58px;
+  left: 600px;
+}
+.user_groups {
+  width: 500px;
+  position: absolute;
+  top: 290px;
+  left: 600px;
+
+}
+.user_top {
+  width: 100%;
+}
+
+.user_posts{
+  width: 400px;
+  position: absolute;
+  top: 290px;
+ 
+}
+.log_in{
+  margin-left: 25%; 
+  margin-right: 25%; 
+}

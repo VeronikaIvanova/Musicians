@@ -3,7 +3,7 @@
     
  <%= label_tag(:name, "Search for:") %>
   <%= text_field_tag(:name) %>
-
+ 
  <select  name="country_name" >
     <option value="" selected="">Select Country</option>
       <% CS.countries.each do |key, value| %>
@@ -63,6 +63,7 @@ $('select[name="state_name"]').change(function() {
 <h1>All users</h1>
 <div class="row">
 <ul>
+  <%= will_paginate @users %>
   <% @users.each do |user| %>
     <li>  
      <%= user.email %>

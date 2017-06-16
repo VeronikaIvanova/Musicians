@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action :authenticate_user! 
-  before_action :set_group, only: [:show, :edit, :update, :destroy]
+  before_action :set_group, only: [:show, :edit, :update, :destroy, :write_message]
 
   # GET /groups
   # GET /groups.json
@@ -56,6 +56,23 @@ class GroupsController < ApplicationController
   def edit
    @instrumentalist_to_group=InstrumentalistToGroup.new
   end
+ 
+  def write_message
+    @chat = Chat.new(:Theme => @group.name)
+   
+    @group_admins=User.find(UserToGroup.where(group_id: @group.id, role: Role.where(name: "admin").first.id).pluck(:user_id))
+    if @group_admins!=nil
+      @chat.save
+      @chat_participant=ChatParticipant.new(user_id: current_user.id, chat_id: @chat.id)
+      @group_admins.each do |user|
+        @chat_participant=ChatParticipant.new(user_id: user.id, chat_id: @chat.id)
+        @chat_participant.save
+      end
+      redirect_to chat_path(@chat.id)
+    else
+      redirect_to :back
+    end
+ end
 
   # POST /groups
   # POST /groups.json

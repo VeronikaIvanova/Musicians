@@ -1,7 +1,7 @@
 class ChatsController < ApplicationController
   before_action :authenticate_user! 
   before_action :set_chat, only: [:show, :edit, :update, :destroy]
-  before_action :messages_for_chat, only: [:show]
+  before_action :set_friends, only: [:new, :edit]
   
   # GET /chats
   # GET /chats.json
@@ -12,8 +12,12 @@ class ChatsController < ApplicationController
   # GET /chats/1
   # GET /chats/1.json
   def show  
-    @message=Message.new
-    @messages=@chat.messages
+    if ChatParticipant.where(user_id: current_user, chat_id: @chat.id)==nil
+      redirect_to :back
+    else
+      @message=Message.new
+      @messages=Message.where(chat_id: @chat.id).distinct.order(created_at: :desc).paginate(:page => params[:page], :per_page =>8)
+    end
   end
  
   # GET /chats/new
@@ -82,6 +86,11 @@ class ChatsController < ApplicationController
     
     def messages_for_chat
       @messages = Message.where(chat_id: @chat.id) 
+    end
+    def set_friends
+      @friends1=User.find(Friend.where(user2: current_user).pluck(:user1))
+      @friends2=User.find(Friend.where(user1: current_user).pluck(:user2))
+      @friends= @friends1 | @friends2
     end
 
 end

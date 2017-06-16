@@ -13,8 +13,6 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise'
-gem 'will_paginate', '3.0.4'
-gem 'bootstrap-will_paginate', '0.0.9'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 gem 'city-state'
@@ -32,9 +30,12 @@ gem 'squeel'
 gem 'faye'
 gem 'thin', require: false
 gem 'sync'
+gem 'will_paginate', '~> 3.1.0'
 gem 'will_paginate-bootstrap'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+gem 'bootstrap_form'
+gem 'bootstrap-select-rails'
 
 # Use Unicorn as the app server
 # gem 'unicorn'

@@ -26,15 +26,16 @@ class SidebarsController < ApplicationController
    @concert_feeds= ConcertNote.where(:concert_id => ConcertFollower.where(user_id: current_user).pluck(:concert_id))
    @feeds_all= @users_feeds | @group_feeds | @concert_feeds
    @feeds_all.sort_by{ |elem| elem.created_at }.reverse
-   @feeds=@feeds_all.first(500)   
+   #@feeds=@feeds_all.first(500) 
+   @feeds=@feeds_all.paginate(:page => params[:page], :per_page =>10)  
   end
 
   def concerts
-    @concerts= Concert.find(ConcertFollower.where(user_id: current_user.id).pluck(:group_id))
+    @concerts= Concert.find(ConcertFollower.where(user_id: current_user.id).pluck(:concert_id))
   end
  
   def concerts_admins
-    @concerts_admin= Concert.find(ConcertFollower.where(user_id: current_user.id, role_id: Role.where(name: "admin").first.id).pluck(:group_id))
+    @concerts_admin= Concert.find(ConcertFollower.where(user_id: current_user.id, role_id: Role.where(name: "admin").first.id).pluck(:concert_id))
   end
 
   def set_friends

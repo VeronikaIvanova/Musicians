@@ -1,93 +1,99 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<div class="header_edit">
+ <h3>Edit <%= resource_name.to_s.humanize %></h3>
+</div>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+<div class="editing" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-body">
+
+<%= bootstrap_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= devise_error_messages! %>
+ 
 
-  <div class="field"><%= f.label :firstname %><br />
-    <%= f.text_field :firstname, autofocus: true %>
-  </div>
+      <%= f.text_field :firstname, autofocus: true %>
+      <%= f.text_field :lastname %>
+      <%= f.date_select :date_of_birth, html: { class: 'selectpicker' } %>   
+      <%= f.collection_select :gender_id, Gender.order(:name), :id, :name, include_blank: false, controll_class: "selectpicker" %>
+      <%= f.label :Location %> <br />
+	  <select class="selectpicker"  name="user[country_name]" >
+	    <option value="<%=current_user.country_name %>" selected="">
+	      <% if current_user.country_name!=nil %>
+		<% CS.countries.each do |k,v| %>
+		  <% if k.to_s==current_user.country_name %>      
+		    <%=  v %>
+		  <% end %> 
+		 <% end %> 
+	      <% else %>
+	       Select Country      
+	      <% end %>       
+	   </option>
+	      <% CS.countries.each do |k, v| %>
+		<option value="<%= k %>"><%= v %></option>
+	      <% end %>
+	  </select>  <br />
 
-  <div class="field"><%= f.label :lastname %><br />
-    <%= f.text_field :lastname %>
-  </div>
+	  <select class="selectpicker" name="user[state_name]">
+	    <option value=<%=current_user.state_name %> selected="">
+	       <% if current_user.state_name!=nil %>
+		<% CS.states(current_user.country_name).each do |k,v| %>
+		  <% if  k.to_s==current_user.state_name %>      
+		    <%=  v %>
+		  <% end %> 
+		 <% end %> 
+	      <% else %>
+	       Select State      
+	      <% end %>       
+	    </option>
+	      <% CS.states(current_user.country_name).each do |k,v| %>
+		<option value="<%= k %>"><%= v %></option>
+	      <% end %>
+	  </select> <br />
 
-  <div><%= f.label :date_of_birth %><br />
-    <%= f.date_select :date_of_birth %>
-  </div>
+	  <select class="selectpicker" name="user[city_name]">
+	     <option value="<%=current_user.city_name %>" selected="">
+	       <% if current_user.city_name!=nil or current_user.city_name!="" %>
+		 <%=current_user.city_name %>
+	       <% else %>
+		 Select City
+	       <% end %>
+	     </option>
+	      <% CS.cities(current_user.state_name).each do |k,v| %>
+		<option value="<%= k %>"><%= k %></option>
+	      <% end %>
+	  </select>
+     
+      <%= f.text_field :info %>
+   
+      <%= f.email_field :email %>
+      <%= f.password_field :password, autocomplete: "off" %>
+      <%= f.password_field :password_confirmation, autocomplete: "off" %>
+      <%= f.password_field :current_password, autocomplete: "off" %>
+	 <div class="participant">
+	   <% Instrument.all.each do |instrument| %>
+	      <%= check_box_tag "user[instrument_ids][]", instrument.id, f.object.instruments.include?(instrument) %>
+	      <%= instrument.name%> <br />
+	   <% end %>
+         </div> <br />
+     
+      <div align="right">    
+	  <div class="actions">
+	    <%= f.submit "Update" %>
+	  </div></div>
 
-  <div><%= f.label :gender %><br />
-    <%= f.collection_select :gender_id, Gender.order(:name), :id, :name, include_blank: true %><br />
-  </div> <br />
 
-<div class="field"> <%= f.label :location %><br />
-
-  <div class="field">
-  <select  name="user[country_name]" >
-    <option value="<%=current_user.country_name %>" selected="">
-      <% if current_user.country_name!=nil %>
-        <% CS.countries.each do |k,v| %>
-          <% if k.to_s==current_user.country_name %>      
-            <%=  v %>
-          <% end %> 
-         <% end %> 
-      <% else %>
-       Select Country      
-      <% end %>       
-   </option>
-      <% CS.countries.each do |k, v| %>
-        <option value="<%= k %>"><%= v %></option>
-      <% end %>
-  </select>  
- </div>
-
-  <div class="field">
-  <select name="user[state_name]">
-    <option value=<%=current_user.state_name %> selected="">
-       <% if current_user.state_name!=nil %>
-        <% CS.states(current_user.country_name).each do |k,v| %>
-          <% if  k.to_s==current_user.state_name %>      
-            <%=  v %>
-          <% end %> 
-         <% end %> 
-      <% else %>
-       Select State      
-      <% end %>       
-    </option>
-      <% CS.states(current_user.country_name).each do |k,v| %>
-        <option value="<%= k %>"><%= v %></option>
-      <% end %>
-  </select>
- </div>
-
-  <div class="field">
-  <select name="user[city_name]">
-     <option value="<%=current_user.city_name %>" selected="">
-       <% if current_user.city_name!=nil or current_user.city_name!="" %>
-         <%=current_user.city_name %>
-       <% else %>
-         Select City
-       <% end %>
-     </option>
-      <% CS.cities(current_user.state_name).each do |k,v| %>
-        <option value="<%= k %>"><%= k %></option>
-      <% end %>
-  </select>
- </div>
- </div>
 
 <script>
 $('select[name="user[country_name]"]').change(function() {
   var input_state = $(this);
   var opt;
   var states=$('select[name="user[state_name]"]');
-  $('select[name="user[city_name]"]').empty();
   $.getJSON('/states/' + $(this).val(), function (data) {
     states.empty();
     opt= '<option value="" selected="">Select State</option>'
     $.each(data, function (i, ele) {
       opt+='<option value='+ i +'>' + ele + '</option>';     
     }); states.html(opt);
-  });  
+  });
 });
 </script>
 
@@ -106,52 +112,15 @@ $('select[name="user[state_name]"]').change(function() {
   });
 });
 </script>
-
-  <div class="field"><%= f.label :info %><br />
-    <%= f.text_field :info %>
-  </div>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email %>
-  </div>
-
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "off" %>
-  </div>
-  <ul>  
-     <%= f.label :Instruments %><br>
-     <% Instrument.all.each do |instrument| %>
-       <li>   
-          <%= check_box_tag "user[instrument_ids][]", instrument.id, f.object.instruments.include?(instrument) %>
-          <%= instrument.name%>
-       </li>
-     <% end %>
-  </ul>
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-
-
 <% end %>
 
 <h3>Cancel my account</h3>
 
-<p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
+<p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete , :class => "btn btn-large" %></p>
 
-<%= link_to "Back", :back %>
+  </div>
+  </div>
+</div>
+
+
+

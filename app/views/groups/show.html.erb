@@ -1,4 +1,4 @@
-<p id="notice"><%= notice %></p>
+c<p id="notice"><%= notice %></p>
 
 <p>
   <strong>Name:</strong>
@@ -20,6 +20,11 @@
         <% end %> 
        <% end %>    	<br></p>
  <p><strong> city:</strong>  <%= @group.city_name %><br> </p>
+
+<%= button_to "New chat", "/groups/#{@group.id}/write" ,
+      :class => "btn btn-large", :method => :get %>
+Followers (<%= UserToGroup.all.count %>) 
+<%= render 'follow_form' %> 
 
   <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).first !=nil %>  
    <div class="field">
@@ -57,15 +62,16 @@
       </ul> 
  </div>   
 <% end %>
+
 <% if Vacancy.where(group_id: @group.id).count>0 %>
   <strong>vacancies: </strong>
   <% Vacancy.where(group_id: @group.id).each do |vacancy|%>
     <%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %>     
   <% end %>
 <% end %>
-<%= render 'follow_form' %>
 
-      <%= render "posts/group_form" %>
+
+     <%= render "posts/group_form" %>
     
     <% GroupNote.where(group_id: @group.id).each do |post| %>
 	 <li>

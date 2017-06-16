@@ -7,6 +7,7 @@ class MessagesController < ApplicationController
   def create
     @message = current_user.messages.build(message_params)
     @chat= Chat.find(params[:chat_id])
+    @messages=Message.where(chat_id: @chat.id).order(created_at: :desc).paginate(:page => params[:page], :per_page =>8) 
     @message.chat_id=@chat.id  
       if @message.save
         sync_new @message

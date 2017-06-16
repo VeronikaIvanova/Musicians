@@ -1,8 +1,11 @@
+<div class="editing" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-body">
+
 <%= form_for(@chat) do |f| %>
   <% if @chat.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@chat.errors.count, "error") %> prohibited this chat from being saved:</h2>
-
+      <h3><%= pluralize(@chat.errors.count, "error") %> prohibited this chat from being saved:</h3>
       <ul>
       <% @chat.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -10,22 +13,40 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= f.label :Theme %><br>
-    <%= f.text_field :Theme %>
-  </div>
-  <ul>  
-     <%= f.label :Participants %><br>
-     <% User.all.each do |user| %>
-       <li>   
-          <%= check_box_tag "chat[user_ids][]", user.id, f.object.users.include?(user) %>
-          <%= user.firstname%> <%= user.lastname %>
-       </li>
-     <% end %>
-  </ul>
-  
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+<table width="100%"> 
+   <tr>
+       <td align="right" valign="top">Theme: </td> 
+       <td>&nbsp;&nbsp;&nbsp;</td>
+       <td>  <%= f.text_field :Theme %> </td>
+       <td width="15%">&nbsp;&nbsp;&nbsp;</td>
+   </tr>
+   <tr><td>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;</td></tr>
+   <tr>   
+       <td align="right" valign="top">Participants: </td>
+       <td>&nbsp;&nbsp;&nbsp;</td>
+       <td><div class="participant">
+          <% if @friends.any? %>
+	     <% @friends.each do |user| %>   
+	          <%= check_box_tag "chat[user_ids][]", user.id, f.object.users.include?(user) %>
+	          <%= user.firstname%> <%= user.lastname %>
+	     <% end %>
+	  <% else %>
+	    You don't have friends yet
+	  <% end %>
+       </div>
+       </td>
+       <td>&nbsp;&nbsp;&nbsp;</td>
+   </tr>
+   <tr><td>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;</td></tr>
+   <tr><td>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;</td>
+       <td align="right"> <div class="actions"> 
+               <%= f.submit class: "btn btn-large btn-primary" %>
+            </div> 
+       </td>
+        <td>&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+</table>
 <% end %>
+   </div>
+  </div>
+</div>

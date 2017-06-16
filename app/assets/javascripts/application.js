@@ -15,4 +15,5 @@
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require sync 
+//= require bootstrap-select
 //= require_tree .

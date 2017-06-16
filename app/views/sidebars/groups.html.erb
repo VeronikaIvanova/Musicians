@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs">
+  <li role="presentation"class="active"><a href="/user_groups/">Subscriptions</a></li>
+  <li role="presentation"><a href="/user_groups/admins/">Administrations</a></li>
+</ul>
+<ul>
+<% @groups.each do |group| %>
+<li> <%= link_to "#{group.name}", group_path(group.id) %>  
+     <%= button_to "Unfollow", user_to_group_path(group.id),
+      :class => "btn btn-large", :method => :delete %> </li>
+<% end %>
+</ul>

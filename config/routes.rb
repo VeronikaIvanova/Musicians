@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :vacancies, :only=>[:new, :create]
     resources :group_notes, :only=>[:new, :create]
   end
+
   resources :concerts do
     resources :concert_followers, :only=>[:new, :create]
     resources :concert_participants, :only=>[:new, :create]
@@ -48,7 +49,8 @@ Rails.application.routes.draw do
   resources :user_to_groups, only: [:destroy]
   resources :answers, only: [:destroy]
 
- 
+  get '/groups/:id/write', to: 'groups#write_message'
+  get '/users/:id/write', to: 'users#write_message'
   get '/instrument/user/:user_id', to: 'application#instruments'	
   get 'cities/:states', to: 'application#cities'
   get 'states/:countries', to: 'application#states'
