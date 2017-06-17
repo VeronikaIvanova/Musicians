@@ -1,38 +1,30 @@
-<%= form_for [@group, @instrumentalist_to_group]  do |f| %>
-<div class="field">
-  <select name="user_id">
-      <% User.find(Instrumentalist.distinct.pluck(:user_id)).each do |user| %>
-        <option value="<%= user.id %>"><%= user.firstname %> <%= user.lastname %></option>
-      <% end %>
-  </select>
- </div>
+<%= bootstrap_form_for [@group, @instrumentalist_to_group]  do |f| %>
+
+ <%= f.select :user_id, options_for_select(User.find(Instrumentalist.distinct.pluck(:user_id)).collect { |user|
+	[user.firstname + user.lastname , user.id] }, 0), {}, { id: 'user_select' } %>
  <div class="field">
-  <select name="instrument_id">
-        <option value="">Select instrument</option>
-  </select>
- </div>
+ <%= f.select :instrument_id, options_for_select(Instrument.all.collect { |instrument|
+	[instrument.name, instrument.id] }, 0), {}, { id: 'instrument_select' } %>
+
 
 <script>
-$('select[name="user_id"]').change(function() {
+$("#user_select").change(function() {
   var input_state = $(this);
   var opt;
-  console.log("jfhjshdjfs");
-  var instruments=$('select[name="instrument_id"]');
-  $.ajax({
-    type: "GET",
-    url: '/instrument/user/' + $(this).val(),    
-    dataType: 'json',
-    success: function(data){  
-       console.log(data);        
-         console.log(data[0].id);
-      for( var i=0; i<data.length; i++ ){        
-        opt+='<option value='+ data[i].id +'>' + data[i].name+ '</option>'; 
-      } instruments.html(opt);
-    }
+  var instruments=$("#instrument_select"); 
+  instruments.empty();
+
+  $.getJSON('/instrument/user/' + $(this).val(), function (data) {
+  
+    opt= '<option value="" selected="">Select Instrument</option>'
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); instruments.prepend(opt);
   });
 });
 </script>
 
-  <%= f.submit "Send" %>
+  <div align="right">
+  <%= f.submit "Send" %></div>
 
 <% end %>

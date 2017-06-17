@@ -44,6 +44,7 @@ class GroupsController < ApplicationController
     end
    @vacancy=Vacancy.new
    @group_note=GroupNote.new
+   @posts=GroupNote.where(group_id: @group.id).order(created_at: :desc).paginate(:page => params[:page], :per_page =>5)
   end
 
   # GET /groups/new
@@ -124,6 +125,6 @@ class GroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def group_params
-      params.require(:group).permit(:name, :information, :city_name, :state_name, :country_name, genre_ids: [])
+      params.require(:group).permit(:name, :information, :country_id, :state_id, :city_id, genre_ids: [])
     end
 end

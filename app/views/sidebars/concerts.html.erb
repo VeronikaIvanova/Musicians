@@ -1,11 +1,35 @@
-<ul class="nav nav-tabs">
-  <li role="presentation"class="active"><a href="/user_concerts/">Subscriptions</a></li>
-  <li role="presentation"><a href="/user_concerts/admins/">Administrations</a></li>
-</ul>
-<ul>
-<% @concerts.each do |concert| %>
-<li> <%= link_to "#{concert.name}", concert_path(concert.id) %>  
-     <%= button_to "Unfollow", concert_follower_path(concert.id),
-      :class => "btn btn-large", :method => :delete %> </li>
-<% end %>
-</ul>
+
+<div class="header_edit">
+ <h3>Concerts</h3>
+</div>
+<div class="followings" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-heading">
+	<ul class="nav nav-tabs">
+	  <li role="presentation"class="active"><a href="/user_concerts/">Subscriptions</a></li>
+	  <li role="presentation"><a href="/user_concerts/admins/">Administrations</a></li>
+	</ul>
+    </div> 
+  <div class="panel-body">
+      <table class="table-striped" width="100%">  
+       <% if @concerts.any? %>
+	<% @concerts.each do |concert| %>
+          <tr>
+            <td ><%= link_to "#{concert.name}", concert_path(concert.id) %> </td> 
+	    <td width="30%"><%= button_to "Unfollow", concert_follower_path(
+                   ConcertFollower.where(concert_id: concert.id,user_id: current_user.id).first.id),
+	                    :class => "btn btn-large", :method => :delete %></td> 
+          </tr> 
+          <tr><td > &nbsp;</td><td > &nbsp;</td></tr>              
+	<% end %> 
+      <% else %> 
+         <tr> <td align="center"> You are not following any concerts. </td> </tr>
+      <% end %> 
+     </table>
+
+     <div class="panel-heading" align="right">
+         <%= will_paginate @concerts %> 
+     </div> 
+  </div>
+</div>
+  </div>

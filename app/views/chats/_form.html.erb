@@ -2,7 +2,7 @@
   <div class="panel panel-default">
     <div class="panel-body">
 
-<%= form_for(@chat) do |f| %>
+<%= bootstrap_form_for(@chat) do |f| %>
   <% if @chat.errors.any? %>
     <div id="error_explanation">
       <h3><%= pluralize(@chat.errors.count, "error") %> prohibited this chat from being saved:</h3>
@@ -17,7 +17,7 @@
    <tr>
        <td align="right" valign="top">Theme: </td> 
        <td>&nbsp;&nbsp;&nbsp;</td>
-       <td>  <%= f.text_field :Theme %> </td>
+       <td>  <%= f.text_field :Theme , skip_label: true%> </td>
        <td width="15%">&nbsp;&nbsp;&nbsp;</td>
    </tr>
    <tr><td>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;</td></tr>
@@ -40,7 +40,7 @@
    <tr><td>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;</td></tr>
    <tr><td>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;</td>
        <td align="right"> <div class="actions"> 
-               <%= f.submit class: "btn btn-large btn-primary" %>
+               <%= f.submit  %>
             </div> 
        </td>
         <td>&nbsp;&nbsp;&nbsp;</td>

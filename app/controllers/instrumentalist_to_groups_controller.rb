@@ -22,4 +22,8 @@ class InstrumentalistToGroupsController < ApplicationController
     redirect_to :back
   end
 
+    def instrument_params
+      params.require(:instrumentalist_to_group).permit(:user_id, :instrument_id)
+    end
+
 end

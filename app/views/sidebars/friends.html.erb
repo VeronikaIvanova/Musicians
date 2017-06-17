@@ -1,21 +1,40 @@
-<ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="/user_friends/">Friends</a></li>
-  <li role="presentation"><a href="/user_friends/requests">Requests</a></li>
-</ul>
+<div class="header_edit">
+ <h3>Friends</h3>
+</div>
+<div class="followings" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-heading">
+	<ul class="nav nav-tabs">
+	  <li role="presentation" class="active"><a href="/user_friends/">Friends</a></li>
+	  <li role="presentation"><a href="/user_friends/requests">Requests</a></li>
+	</ul>
+    </div> 
+     <div class="panel-body">
+      <table class="table-striped" width="100%">  
+       <% if @friends.any? %>
+	<% @friends.each do |request| %>
+          <tr>
+	     <% if current_user.id==request.user1 %>
+	        <td><%= link_to "#{User.find(request.user2).firstname} #{User.find(request.user2).lastname}",
+		       "/users/#{request.user2}" %></td>
+	     <% else %>
+		<td ><%= link_to "#{User.find(request.user1).firstname} #{User.find(request.user1).lastname}",
+		       "/users/#{request.user1}" %></td>
+	     <% end %>
+	     <td width="30%"><%= button_to "Unfollow","/friends/#{request.id}" ,
+		     :class => "btn btn-large", :method => :delete %></td>
+          </tr> 
+          <tr><td > &nbsp;</td><td > &nbsp;</td></tr>              
+	<% end %> 
+      <% else %> 
+         <tr> <td align="center"> You are not following any users. </td> </tr>
+      <% end %> 
+     </table>
 
-   <% if @friends!=nil and @friends.count>0  %>
-     <ul>Friends:
-      <% @friends.each do |request| %>
-         <% if current_user.id==request.user1 %>
-            <%= link_to "#{User.find(request.user2).firstname} #{User.find(request.user2).lastname}",
-               "/users/#{request.user2}" %>
-         <% else %>
-            <%= link_to "#{User.find(request.user1).firstname} #{User.find(request.user1).lastname}",
-               "/users/#{request.user1}" %>
-         <% end %>
-         <%= button_to "Destroy","/friends/#{request.id}" ,
-             :class => "btn btn-large", :method => :delete %></li>
-     <% end %> </ul>
-   <% else %> <p> You have no friends </p>
-   <% end %>
+     <div class="panel-heading" align="right">
+         <%= will_paginate @friends %> 
+     </div> 
+  </div>
+</div>
+ </div>
    

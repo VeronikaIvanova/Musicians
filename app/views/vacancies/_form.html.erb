@@ -1,4 +1,8 @@
-<%= form_for [@group, @vacancy]  do |f| %>
+<div class="editing" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-body">
+
+ <%= bootstrap_form_for [@group, @vacancy]  do |f| %>
   <% if @vacancy.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@vacancy.errors.count, "error") %> prohibited this vacancy from being saved:</h2>
@@ -11,21 +15,23 @@
     </div>
   <% end %>
 
-  <div class="field">  
-    <select  name="vacancy[instrument_id]" > 
-      <option value="" selected="">Select instrument</option>
+    <%= f.label :Insrument %> <br>
+    <select class="selectpicker" name="vacancy[instrument_id]" > 
         <% @instruments.each do |instrument| %>
           <option value="<%= instrument.id %>"><%= instrument.name %></option>
         <% end %>
     </select>  
-  </div>
 
 
   <div class="field">
     <%= f.text_area :info, placeholder: "Compose new message..." %>
  </div>
 
-  <div class="actions">
+  <div class="actions" align="right">
     <%= f.submit %>
   </div>
 <% end %>
+
+ </div>
+  </div>
+</div>

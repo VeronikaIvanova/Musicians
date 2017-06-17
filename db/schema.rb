@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170614110349) do
+ActiveRecord::Schema.define(version: 20170617005609) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,11 @@ ActiveRecord::Schema.define(version: 20170614110349) do
     t.string   "Theme"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "cities", force: :cascade do |t|
+    t.string  "name"
+    t.integer "state_id"
   end
 
   create_table "concert_followers", force: :cascade do |t|
@@ -68,17 +73,21 @@ ActiveRecord::Schema.define(version: 20170614110349) do
     t.string   "name"
     t.string   "place"
     t.datetime "date"
-    t.string   "city"
-    t.string   "state"
-    t.string   "country"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "city_id"
+    t.integer  "state_id"
+    t.integer  "country_id"
   end
 
   create_table "controllers", force: :cascade do |t|
     t.string   "Instruments"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "countries", force: :cascade do |t|
+    t.string "name"
   end
 
   create_table "friends", force: :cascade do |t|
@@ -119,11 +128,11 @@ ActiveRecord::Schema.define(version: 20170614110349) do
   create_table "groups", force: :cascade do |t|
     t.string   "name"
     t.string   "information"
-    t.string   "city_name"
-    t.string   "state_name"
-    t.string   "country_name"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "city_id"
+    t.integer  "state_id"
+    t.integer  "country_id"
   end
 
   create_table "instrumentalist_to_groups", force: :cascade do |t|
@@ -131,6 +140,8 @@ ActiveRecord::Schema.define(version: 20170614110349) do
     t.datetime "updated_at",         null: false
     t.integer  "instrumentalist_id"
     t.integer  "group_id"
+    t.integer  "user_id"
+    t.integer  "instrument_id"
   end
 
   create_table "instrumentalists", force: :cascade do |t|
@@ -161,14 +172,6 @@ ActiveRecord::Schema.define(version: 20170614110349) do
   add_index "messages", ["chat_id"], name: "index_messages_on_chat_id", using: :btree
   add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
 
-  create_table "request_groups", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer  "group_id"
-    t.integer  "concert_id"
-    t.integer  "count"
-  end
-
   create_table "resume_genres", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -187,6 +190,11 @@ ActiveRecord::Schema.define(version: 20170614110349) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "states", force: :cascade do |t|
+    t.string  "name"
+    t.integer "country_id"
   end
 
   create_table "statuses", force: :cascade do |t|
@@ -238,10 +246,10 @@ ActiveRecord::Schema.define(version: 20170614110349) do
     t.datetime "date_of_birth"
     t.text     "info"
     t.integer  "gender_id"
-    t.string   "country_name"
-    t.string   "city_name"
-    t.string   "state_name"
     t.integer  "role_id"
+    t.integer  "city_id"
+    t.integer  "state_id"
+    t.integer  "country_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -260,6 +268,7 @@ ActiveRecord::Schema.define(version: 20170614110349) do
   add_foreign_key "answers", "vacancies"
   add_foreign_key "chat_participants", "chats"
   add_foreign_key "chat_participants", "users"
+  add_foreign_key "cities", "states"
   add_foreign_key "concert_followers", "concerts"
   add_foreign_key "concert_followers", "roles"
   add_foreign_key "concert_followers", "users"
@@ -268,6 +277,9 @@ ActiveRecord::Schema.define(version: 20170614110349) do
   add_foreign_key "concert_participants", "concerts"
   add_foreign_key "concert_participants", "groups"
   add_foreign_key "concert_participants", "statuses"
+  add_foreign_key "concerts", "cities"
+  add_foreign_key "concerts", "countries"
+  add_foreign_key "concerts", "states"
   add_foreign_key "friends", "statuses"
   add_foreign_key "friends", "users", column: "user1"
   add_foreign_key "friends", "users", column: "user2"
@@ -275,25 +287,30 @@ ActiveRecord::Schema.define(version: 20170614110349) do
   add_foreign_key "group_notes", "users"
   add_foreign_key "group_to_genres", "genres"
   add_foreign_key "group_to_genres", "groups"
+  add_foreign_key "groups", "cities"
+  add_foreign_key "groups", "countries"
+  add_foreign_key "groups", "states"
   add_foreign_key "instrumentalist_to_groups", "groups"
   add_foreign_key "instrumentalist_to_groups", "instrumentalists"
   add_foreign_key "instrumentalists", "instruments"
   add_foreign_key "instrumentalists", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
-  add_foreign_key "request_groups", "concerts"
-  add_foreign_key "request_groups", "groups"
   add_foreign_key "resume_genres", "genres"
   add_foreign_key "resume_genres", "resumes"
   add_foreign_key "resumes", "instrumentalists"
+  add_foreign_key "states", "countries"
   add_foreign_key "user_genres", "genres"
   add_foreign_key "user_genres", "users"
   add_foreign_key "user_notes", "users"
   add_foreign_key "user_to_groups", "groups"
   add_foreign_key "user_to_groups", "roles"
   add_foreign_key "user_to_groups", "users"
+  add_foreign_key "users", "cities"
+  add_foreign_key "users", "countries"
   add_foreign_key "users", "genders"
   add_foreign_key "users", "roles"
+  add_foreign_key "users", "states"
   add_foreign_key "vacancies", "groups"
   add_foreign_key "vacancies", "instruments"
 end

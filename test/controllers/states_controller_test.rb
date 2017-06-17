@@ -18,7 +18,7 @@ class StatesControllerTest < ActionController::TestCase
 
   test "should create state" do
     assert_difference('State.count') do
-      post :create, state: {  }
+      post :create, state: { country_id: @state.country_id, name: @state.name }
     end
 
     assert_redirected_to state_path(assigns(:state))
@@ -35,7 +35,7 @@ class StatesControllerTest < ActionController::TestCase
   end
 
   test "should update state" do
-    patch :update, id: @state, state: {  }
+    patch :update, id: @state, state: { country_id: @state.country_id, name: @state.name }
     assert_redirected_to state_path(assigns(:state))
   end
 

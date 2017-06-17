@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :states
+  resources :cities
+  resources :countries
   resources :statuses
   resources :concerts
   resources :conserts
@@ -52,8 +55,8 @@ Rails.application.routes.draw do
   get '/groups/:id/write', to: 'groups#write_message'
   get '/users/:id/write', to: 'users#write_message'
   get '/instrument/user/:user_id', to: 'application#instruments'	
-  get 'cities/:states', to: 'application#cities'
-  get 'states/:countries', to: 'application#states'
+  get '/get/cities/:id', to: 'application#cities'
+  get '/get/states/:id', to: 'application#states'
   get 'countries', to: 'application#countries'
   root 'static#index'
 

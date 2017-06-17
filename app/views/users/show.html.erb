@@ -1,6 +1,6 @@
 <div class="user_name">
   <p> <%= image_tag avatar_url(@user) %>
-  <%= @user.firstname %> <%= @user.lastname %> <h3></p>
+  <%= @user.firstname %> <%= @user.lastname %></p>
  
     <% if current_user.id!= @user.id%>
       <table>
@@ -19,7 +19,8 @@
       <div class="panel-heading">
         <h3 class="panel-title"> Information </h3>
       </div>
-      <div class="panel-body">
+   <ul class="list-group">
+      <li class="list-group-item">
         <table>       
             <tr><td align="right"> email:</td> <td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.email %><br></td> </tr>
             <% if @user.date_of_birth!=nil %>
@@ -28,43 +29,41 @@
             <% if @user.gender!=nil %>
               <tr><td align="right"> gender:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.gender.name %></td>  </tr>
             <% end %>  
-            <% if @user.country_name!="" and @user.country_name!=nil %>         
-              <tr><td align="right"> country:</td> <td>&nbsp;&nbsp;&nbsp;</td><td align="left">  <% CS.countries.each do |k,v| %>
-                                  <% if @user.country_name!=nil and  k.to_s==@user.country_name %>  
-                                  <%=  v %>  <% end %>  <% end %>   </td>   </tr>
+            <% if @user.country_id!=nil %>         
+              <tr><td align="right"> country:</td> <td>&nbsp;&nbsp;&nbsp;</td><td align="left">  <%=@user.country.name %>  </td>   </tr>
             <% end %>  
-            <% if @user.state_name!="" and @user.state_name!=nil %> 
-               <tr><td align="right"> state:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <% CS.states(current_user.country_name).each do |k,v| %>
-                                           <% if @user.state_name!=nil and  k!=nil and k.to_s.==@user.state_name %>      
-                                           <%=  v %>  <% end %>  <% end %>   </td>   </tr>
+            <% if @user.state_id !=nil %> 
+               <tr><td align="right"> state:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%=@user.state.name %>  </td>   </tr>
             <% end %>  
-            <% if @user.city_name!="" and @user.city_name!=nil %> 
-               <tr><td align="right"> city:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.city_name %></td>  </tr>
+            <% if @user.city_id !=nil %> 
+               <tr><td align="right"> city:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.city.name %></td>  </tr>
             <% end %>  
             <% if @user.info!="" and @user.info!=nil %>     
                <tr><td align="right"> info:</td><td>&nbsp;&nbsp;&nbsp;</td> <td align="left"> <%= @user.info%></td>    </tr>                              
             <% end %>  
         </table>
-    </div>
+      </li>  
+
+ <% if  Group.find(UserToGroup.where(user_id: @user.id, role: Role.where(name: "admin").first.id).pluck(:group_id)).count>0 %>   
+   <li class="list-group-item">      
+        <strong> Groups: </strong><ul>        
+               <% Group.find(UserToGroup.where(user_id: @user.id, role: Role.where(name: "admin").first.id).pluck(:group_id)).each do |group| %> 
+                <li> <%= link_to "#{group.name}", group_path(group.id) %> </li>
+               <% end %> </ul>
+    </li>
+<% end %>  
+<% if  Resume.where(:instrumentalist_id=>Instrumentalist.where(user_id: @user.id).pluck(:id)).any? %>   
+   <li class="list-group-item">      
+        <strong> Resumes: </strong><ul>        
+               <% Resume.where(:instrumentalist_id=>Instrumentalist.where(user_id: @user.id).pluck(:id)).each do |resume| %> 
+                <li> <%= link_to "#{resume.instrumentalist.instrument.name}", resume_path(resume.id) %> </li>
+               <% end %> </ul>
+    </li>
+
+<% end %>  
+  </ul>
   </div>
 </div>
-<% if  Group.find(UserToGroup.where(user_id: @user.id, role: Role.where(name: "admin").first.id).pluck(:group_id)).count>0 %>   
-  <div class= "user_groups">   
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title"> Groups </h3>
-      </div>
-      <div class="panel-body">
-        <table>                  
-               <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> <td align="left">  
-               <% Group.find(UserToGroup.where(user_id: @user.id, role: Role.where(name: "admin").first.id).pluck(:group_id)).each do |group| %> 
-                 <%= link_to "#{group.name}", group_path(group.id) %> </br>
-               <% end %> </td> </tr>
-        </table>
-    </div>
-  </div>
- </div>
-<% end %>  
 
  <% if @posts.count>0 %>
 <div class="user_posts">

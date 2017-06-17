@@ -1,16 +1,27 @@
+<div class="header_edit">
+ <h3>Feeds</h3>
+</div>
 
-<div>
-<% @feeds.each do |feed| %>
- <p> <% if feed.class==GroupNote %>
-    <strong> <%= link_to "#{Group.find(feed.group_id).name}", group_path(feed.group_id) %> </strong>
-  <% else %>
-    <% if feed.class==ConcertNote %>
-       <strong> <%= link_to "#{Concert.find(feed.concert_id).name}", concert_path(feed.concert_id) %> </strong>
-    <% end %>
-  <% end %> <br />
-  <strong> <%= link_to "#{User.find(feed.user_id).firstname}" "#{User.find(feed.user_id).lastname}", user_path(feed.user_id) %> </strong> <br />
-  <small> [ <%= feed.created_at.strftime('%-d %B %Y, %H:%M:%S') %>] </small> <br />
-  <%= feed.text %><br /></p>
-
-<% end %> 
+<div class="editing" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-body">
+	<% @feeds.each do |feed| %>
+          <li class="list-group-item">
+	    <% if feed.class==GroupNote %>
+	     <strong> Group: <%= link_to "#{Group.find(feed.group_id).name}", group_path(feed.group_id) %></strong> 
+	    <% else %>
+	      <% if feed.class==ConcertNote %>
+	      <strong> Concert:  <%= link_to "#{Concert.find(feed.concert_id).name}", concert_path(feed.concert_id) %></strong> 
+	      <% end %>
+	   <% end %> <br />
+	   <strong> <%= link_to "#{User.find(feed.user_id).firstname}" " " "#{User.find(feed.user_id).lastname}", user_path(feed.user_id) %></strong> 
+	   <span class="timestamp"> at <%= feed.created_at.strftime('%-d %B %Y, %H:%M:%S') %></span> <br />
+	   <%= feed.text %><br /></p>
+        </li>
+	<% end %> 
+      <div class="panel-heading" align="right">
+         <%= will_paginate @feeds %> 
+      </div> 
+    </div>
+  </div>
 </div>

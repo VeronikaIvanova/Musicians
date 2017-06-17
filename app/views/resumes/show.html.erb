@@ -1,17 +1,20 @@
 <p id="notice"><%= notice %></p>
+<div class="header_edit">
+ <h3>Resume</h3>
+</div>
 
-<p>
+
+<div class="followings" width="100%"> 
+  <div class="panel panel-default">
+  <div class="panel-body">
   <strong>User:</strong>
-  <%= link_to "#{User.find(@instrumentalist.user_id).firstname}
+   <%= link_to "#{User.find(@instrumentalist.user_id).firstname}
          #{User.find(@instrumentalist.user_id).lastname}", "/users/#{@instrumentalist.user_id}" %>  <br />
-
   <strong>Instrument:</strong>
   <%= Instrument.find(@instrumentalist.instrument_id).name %><br />
-  <strong>Genres:</strong>
+  <strong>Genres:</strong><ul>
     <% @resume.resume_genres.each do |genre| %>
-      <%=  Genre.find(genre.id).name %> 
-    <% end %> 
+     <li> <%=  Genre.find(genre.genre.id).name %> </li>
+    <% end %> </ul>
 </p>
-
-<%= link_to 'Edit', edit_resume_path(@resume) %> |
-<%= link_to 'Back', resumes_path %>
+</div></div></div>

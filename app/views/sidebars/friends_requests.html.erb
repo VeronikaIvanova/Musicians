@@ -1,16 +1,39 @@
-<ul class="nav nav-tabs">
-  <li role="presentation"><a href="/user_friends/">Friends</a></li>
-  <li role="presentation"class="active"><a href="/user_friends/requests/">Requests</a></li>
-</ul>
 
-   <% if @requests!=nil and @requests.count>0 %>
-      <% @requests.each do |request| %>
-            <%= link_to "#{User.find(request.user2).firstname} #{User.find(request.user2).lastname}",
-               "/users/#{request.user2}" %>
-         <%= button_to "Add","/request/#{request.id}" ,
-             :class => "btn btn-large", :method => :get %>
-         <%= button_to "Destroy","/friends/#{request.id}" ,
-             :class => "btn btn-large", :method => :delete %>
-      <% end %>
-   <% else %> <p> You have no requests </p>
-   <% end %>
+
+<div class="header_edit">
+ <h3>Friends</h3>
+</div>
+<div class="followings" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-heading">
+	<ul class="nav nav-tabs">
+	  <li role="presentation"><a href="/user_friends/">Friends</a></li>
+	  <li role="presentation"class="active"><a href="/user_friends/requests/">Requests</a></li>
+	</ul>	
+    </div> 
+  <div class="panel-body">
+      <table class="table-striped" width="100%">
+       <% if @requests.any? %>
+	    <% @requests.each do |request| %>
+              <tr>
+		<td ><%= link_to "#{User.find(request.user2).firstname} #{User.find(request.user2).lastname}",
+		       "/users/#{request.user2}" %></td>
+		<td align="right"><%= button_to "Add","/request/#{request.id}" ,
+		     :class => "btn btn-large", :method => :get %></td>
+                  <td width="2%"> &nbsp;</td>
+		 <td align="left"><%= button_to "Destroy","/friends/#{request.id}" ,
+		     :class => "btn btn-large", :method => :delete %> </td>
+              </tr> 
+          <tr><td > &nbsp;</td><td > &nbsp;</td><td > &nbsp;</td></tr>   
+	   <% end %>
+      <% else %> 
+         <tr> <td align="center"> You have no requests. </td> </tr>
+      <% end %> 
+     </table>
+
+     <div class="panel-heading" align="right">
+         <%= will_paginate @requests %> 
+     </div> 
+  </div>
+</div>
+</div>

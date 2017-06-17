@@ -3,20 +3,21 @@ class SidebarsController < ApplicationController
   before_action :set_friends, only: [:friends, :feeds]
 
   def friends
+    @friends=@friends.paginate(:page => params[:page], :per_page =>10)  
   end
 
 
   def friends_requests
-    @requests= Friend.where("(user1= :user1) and status_id= :status", user1: current_user.id, status: Status.where(name: "request").first.id)
+    @requests= Friend.where("(user1= :user1) and status_id= :status", user1: current_user.id, status: Status.where(name: "request").first.id).paginate(:page => params[:page], :per_page =>10)  
   end
 
   def groups
-    @groups= Group.find(UserToGroup.where(user_id: current_user.id).pluck(:group_id))
+    @groups= Group.find(UserToGroup.where(user_id: current_user.id).pluck(:group_id)).paginate(:page => params[:page], :per_page =>10)  
   end
 
 
   def groups_admins
-    @groups_admin= Group.find(UserToGroup.where(user_id: current_user.id, role_id: Role.where(name: "admin").first.id).pluck(:group_id))
+    @groups_admin= Group.find(UserToGroup.where(user_id: current_user.id, role_id: Role.where(name: "admin").first.id).pluck(:group_id)).paginate(:page => params[:page], :per_page =>10)  
   end
 
   def feeds
@@ -25,17 +26,17 @@ class SidebarsController < ApplicationController
    @group_feeds= GroupNote.where(:group_id => UserToGroup.where(user_id: current_user).pluck(:group_id))
    @concert_feeds= ConcertNote.where(:concert_id => ConcertFollower.where(user_id: current_user).pluck(:concert_id))
    @feeds_all= @users_feeds | @group_feeds | @concert_feeds
-   @feeds_all.sort_by{ |elem| elem.created_at }.reverse
+   @feeds_all=@feeds_all.sort_by{ |elem| elem.created_at }.reverse
    #@feeds=@feeds_all.first(500) 
    @feeds=@feeds_all.paginate(:page => params[:page], :per_page =>10)  
   end
 
   def concerts
-    @concerts= Concert.find(ConcertFollower.where(user_id: current_user.id).pluck(:concert_id))
+    @concerts= Concert.find(ConcertFollower.where(user_id: current_user.id).pluck(:concert_id)).paginate(:page => params[:page], :per_page =>10) 
   end
  
   def concerts_admins
-    @concerts_admin= Concert.find(ConcertFollower.where(user_id: current_user.id, role_id: Role.where(name: "admin").first.id).pluck(:concert_id))
+    @concerts_admin= Concert.find(ConcertFollower.where(user_id: current_user.id, role_id: Role.where(name: "admin").first.id).pluck(:concert_id)).paginate(:page => params[:page], :per_page =>10) 
   end
 
   def set_friends

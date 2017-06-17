@@ -1,4 +1,7 @@
 class Concert < ActiveRecord::Base
+belongs_to :city
+belongs_to :state
+belongs_to :country
 has_many :concert_participants, :dependent => :delete_all
 has_many :groups, through: :concert_participants
 

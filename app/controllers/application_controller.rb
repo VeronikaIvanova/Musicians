@@ -9,21 +9,21 @@ class ApplicationController < ActionController::Base
   end
 
   def states
-    render json: CS.states(params[:countries]).to_json
-  end
+     render json: State.where(country_id: params[:id]).to_json
+  end   
 
   def cities
-    render json: CS.cities(params[:states]).to_json
+     render json: City.where(state_id: params[:id]).to_json      
   end
-
+ 
   def instruments
     render json: Instrument.find(Instrumentalist.where(user_id: params[:user_id]).pluck(:instrument_id)).to_json
   end
 
   protected
     def configure_permitted_parameters
-            devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit(:firstname,:lastname, :email, :password, :date_of_birth, :info, :country_name, :state_name, :city_name, :gender_id, instrument_ids: [] ) }
-            devise_parameter_sanitizer.permit(:account_update) { |u| u.permit(:firstname, :lastname, :email, :password, :current_password, :date_of_birth, :info,  :country_name, :state_name, :city_name, :gender_id, instrument_ids: []   ) }
+            devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit(:firstname,:lastname, :country_id, :state_id, :email, :password, :date_of_birth, :info, :city_id, :gender_id, instrument_ids: [] ) }
+            devise_parameter_sanitizer.permit(:account_update) { |u| u.permit(:firstname, :lastname, :email,:country_id, :state_id,  :password, :current_password, :date_of_birth, :info,  :city_id, :gender_id, instrument_ids: []   ) }
     end
 end
 

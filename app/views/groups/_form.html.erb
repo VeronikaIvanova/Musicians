@@ -1,4 +1,8 @@
-<%= form_for(@group) do |f| %>
+<div class="editing" width="100%"> 
+  <div class="panel panel-default">
+    <div class="panel-body">
+
+<%= bootstrap_form_for(@group) do |f| %>
   <% if @group.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h2>
@@ -11,114 +15,66 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :name %><br>
+
     <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :information %><br>
     <%= f.text_field :information %>
-  </div>
-   <div class="field">
-
-  <select  name="group[country_name]" >
-    <option value="<%=@group.country_name %>" selected="">
-      <% if @group.country_name!=nil %>
-        <% CS.countries.each do |k,v| %>
-          <% if k.to_s==@group.country_name %>      
-            <%=  v %>
-          <% end %> 
-         <% end %> 
-      <% else %>
-       Select Country      
-      <% end %>       
-   </option>
-      <% CS.countries.each do |k, v| %>
-        <option value="<%= k %>"><%= v %></option>
-      <% end %>
-  </select>  
- </div>
-
-  <div class="field">
-  <select name="group[state_name]">
-    <option value="<%=@group.state_name %>" selected="">
-       <% if @group.state_name!=nil %>
-        <% CS.states(@group.country_name).each do |k,v| %>
-          <% if  k.to_s==@group.state_name %>      
-            <%=  v %>
-          <% end %> 
-         <% end %> 
-      <% else %>
-       Select State      
-      <% end %>       
-    </option>
-      <% CS.states(@group.country_name).each do |k,v| %>
-        <option value="<%= k %>"><%= v %></option>
-      <% end %>
-  </select>
- </div>
-
-  <div class="field">
-  <select name="group[city_name]">
-     <option value="<%=@group.city_name %>" selected="">
-       <% if @group.city_name!=nil or @group.city_name=="" %>
-         <%=@group.city_name %>
-       <% else %>
-         Select City
-       <% end %>
-     </option>
-      <% CS.cities(@group.state_name).each do |k,v| %>
-        <option value="<%= k %>"><%= k %></option>
-      <% end %>
-  </select>
- </div>
+      <%= f.select :country_id, options_for_select(Country.all.collect { |country|
+	[country.name.titleize, country.id] }, 1), {}, { id: 'countries_select' } %>
+      <%= f.select :state_id, options_for_select(State.where(country_id: Country.first.id).collect { |state|
+	[state.name.titleize, state.id] }, 0), {}, { id: 'states_select' } %>
+      <%= f.select :city_id, options_for_select(City.where(state_id: State.first.id).collect { |city|
+	[city.name.titleize, city.id] }, 0), {}, { id: 'cities_select' } %>
  
-
-<script>
-$('select[name="group[country_name]"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var states=$('select[name="group[state_name]"]');
-  $('select[name="group[city_name]"]').empty();
-  $.getJSON('/states/' + $(this).val(), function (data) {
-    states.empty();
-    opt= '<option value="" selected="">Select State</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ i +'>' + ele + '</option>';     
-    }); states.html(opt);
-  });  
-});
-</script>
-
-
-<script>
-$('select[name="group[state_name]"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var cities=$('select[name="group[city_name]"]');
-  $.getJSON('/cities/' + $(this).val(), function (data) {
-    cities.empty();
-    opt= '<option value="" selected="">Select City</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ ele +'>' + ele+ '</option>';     
-    }); cities.html(opt);
-  });
-});
-</script>
-
- <div class="field">
-   <ul>  
      <%= f.label :Genres %><br>
-     <% Genre.all.each do |genre| %>
-       <li>   
+    <div class="participant">
+     <% Genre.all.each do |genre| %> 
           <%= check_box_tag "group[genre_ids][]", genre.id, f.object.genres.include?(genre) %>
-          <%= genre.name%>
-       </li>
+          <%= genre.name%><br />
      <% end %>
-  </ul>
-  </div>
-  <div class="actions">
+    </div>
+
+  <div class="actions" align="right">
     <%= f.submit %>
   </div>
 </div>
 <% end %>
+
+  </div>
+  </div>
+</div>
+<script>
+$("#countries_select").change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$("#states_select"); 
+  states.empty();
+
+  $.getJSON('/get/states/' + $(this).val(), function (data) {
+  
+    opt= '<option value="" selected="">Select City</option>'
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); states.prepend(opt);
+  });
+});
+</script>
+<script>
+$("#states_select").change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$("#cities_select"); 
+  cities.empty();
+
+  $.getJSON('/get/cities/' + $(this).val(), function (data) {
+  
+    opt= '<option value="" selected="">Select City</option>'
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); cities.prepend(opt);
+  });
+});
+</script>
+
+
+
+
