@@ -68,7 +68,6 @@ class ChatsController < ApplicationController
       @chat.destroy
     end
      redirect_to chats_url
-    end
   end
 
   private
