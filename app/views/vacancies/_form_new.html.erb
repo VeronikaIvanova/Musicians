@@ -28,7 +28,7 @@
 
     <%= f.label :Insrument %> <br>
     <select class="selectpicker" name="vacancy[instrument_id]" > 
-        <% Instrument.all.each do |instrument| %>
+        <% Instrument.all.order(:name).each do |instrument| %>
           <option value="<%= instrument.id %>"><%= instrument.name %></option>
         <% end %>
     </select>  <br>
