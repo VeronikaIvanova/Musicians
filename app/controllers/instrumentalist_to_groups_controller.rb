@@ -5,10 +5,13 @@ class InstrumentalistToGroupsController < ApplicationController
   end
 
   def create
+
     @group=Group.find(params[:group_id])   
-    @instrumentalist=Instrumentalist.where(user_id: params[:user_id], instrument_id: params[:instrument_id]).first
+    @instrumentalist_to_group=InstrumentalistToGroup.new(instrument_params)
+    @instrumentalist=Instrumentalist.where(user_id: @instrumentalist_to_group.user_id, instrument_id: @instrumentalist_to_group.instrument_id).first
     if @instrumentalist!=nil  
-      @instrumentalist_to_group=InstrumentalistToGroup.new(:instrumentalist_id => @instrumentalist.id, :group_id => @group.id)
+      @instrumentalist_to_group.instrumentalist_id=@instrumentalist.id
+      @instrumentalist_to_group.group_id=@group.id
       @user_to_group=UserToGroup.new(:group_id => @group.id, :user_id => @instrumentalist.user_id, :role_id=> Role.where(name: "admin").first.id)
       @user_to_group.save
       @instrumentalist_to_group.save

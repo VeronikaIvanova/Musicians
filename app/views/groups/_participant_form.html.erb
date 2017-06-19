@@ -1,7 +1,7 @@
 <%= bootstrap_form_for [@group, @instrumentalist_to_group]  do |f| %>
 
  <%= f.select :user_id, options_for_select(User.find(Instrumentalist.distinct.pluck(:user_id)).collect { |user|
-	[user.firstname +" "+ user.lastname , user.id] }, 0), {}, { id: 'user_select' } %>
+	[user.firstname + " " + user.lastname , user.id] }, 0), {}, { id: 'user_select' } %>
  <div class="field">
  <%= f.select :instrument_id, options_for_select(Instrument.all.collect { |instrument|
 	[instrument.name, instrument.id] }, 0), {}, { id: 'instrument_select' } %>

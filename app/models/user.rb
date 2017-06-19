@@ -35,4 +35,7 @@ belongs_to :country
 
   has_many :concert_notes, :dependent => :delete_all
 
+  validates :firstname, presence: true
+  validates :lastname, presence: true
+
 end
