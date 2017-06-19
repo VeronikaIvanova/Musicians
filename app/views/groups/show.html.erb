@@ -5,7 +5,7 @@
         <td><%= render 'follow_form' %></td><td> &nbsp;</td>
 	<td><%= button_to "New chat", "/groups/#{@group.id}/write" ,
 	      :class => "btn btn-large btn-primary", :method => :get %></td><td> &nbsp;</td>
-         <% if UserToGroup.where(user_id: current_user.id,group_id: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>   
+         <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>   
            <td><%= button_to 'new vacancy', new_group_vacancy_path(@group.id),  
                  :class => "btn btn-large btn-primary", :method => :get %></td>
          <% end %>
@@ -62,27 +62,22 @@
      </li>
 <% if Vacancy.where(group_id: @group.id).count>0 %>
            <li class="list-group-item">
-	     <strong>Vacancies: </strong>     
+	     <strong>Vacancies: </strong>  <ul>      
 	     <% Vacancy.where(group_id: @group.id).each do |vacancy|%>
-	       <li>  <table><tr>
-               <td><%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %> </td>
-                 <% if UserToGroup.where(user_id: current_user.id,group_id: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>              
-                    <td> &nbsp; </td>
-                     <td>  <%= link_to "delete", vacancy, method: :delete,
-			    	                     data: { confirm: "You sure?" } %> </td> 
-                  <% end %>                           
-                </tr></table>
+	       <li> <%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %>   
             
-
-             </li>
-	     <% end %></li>
+                 <% if UserToGroup.where(user_id: current_user.id,group_id: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>              
+                     &nbsp;
+                    <%= link_to "delete", vacancy, method: :delete,
+			    	                     data: { confirm: "You sure?" } %>
+                 <% end %>
+               </li>
+           <% end %>
+	    </ul> </li>
 	<% end %>
- <% if Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).any? %>
-		
-       <li class="list-group-item"><table width="100%"><tr><td>
+     <li class="list-group-item"><table width="100%"><tr><td>
 	  <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>  
-	      
-               <strong>Participants: </strong>
+	      <ul> <strong>Participants: </strong>
 	      
 		 <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
 		       <li>      
@@ -92,7 +87,7 @@
 			  <%= link_to 'Destroy', InstrumentalistToGroup.where(group_id: @group.id,instrumentalist_id:instrumentalist.id).first, method: :delete, data: { confirm: 'Are you sure?' } %>     
 		       </li>
 		 <% end %>
-	      </td><td >
+	      </ul> </td><td >
 	      <div id="button_participants" style = "display:block">
 		<input type="button" onclick="add()"class = "btn btn-large btn-primary" value="Add!"/>
 	      </div>
@@ -104,18 +99,18 @@
 	  <%else %> 
 	     <% if Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).any? %>
 		<strong>Participants: </strong>
-
+		<ul>
 		   <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
 		      <li>        
 	       		   <%= User.find(instrumentalist.user_id).firstname %> <%= User.find(instrumentalist.user_id).lastname%>
 	       		   <%= Instrument.find(instrumentalist.instrument_id).name %>       
 	       	      </li>
 	    	  <% end %>
-	
+		</ul> 
 	     <% end %> 
 	  <% end %>
        </li>  
-   <% end %>
+	
 
     
  
@@ -130,6 +125,6 @@
      div.style.display = 'block';
      div = document.getElementById('button_participants');
      div.style.display = 'none';
-
 }
 </script>
+
