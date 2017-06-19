@@ -62,25 +62,27 @@
      </li>
 <% if Vacancy.where(group_id: @group.id).count>0 %>
            <li class="list-group-item">
-	     <strong>Vacancies: </strong>       
+	     <strong>Vacancies: </strong>     
 	     <% Vacancy.where(group_id: @group.id).each do |vacancy|%>
 	       <li>  <table><tr>
-               <td><%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %> 
-                 <% if UserToGroup.where(user_id: current_user.id,group_id: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %> </td>           
+               <td><%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %> </td>
+                 <% if UserToGroup.where(user_id: current_user.id,group_id: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>              
                     <td> &nbsp; </td>
                      <td>  <%= link_to "delete", vacancy, method: :delete,
 			    	                     data: { confirm: "You sure?" } %> </td> 
                   <% end %>                           
                 </tr></table>
+            
+
              </li>
-	     <% end %> </li>
+	     <% end %></li>
 	<% end %>
  <% if Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).any? %>
 		
        <li class="list-group-item"><table width="100%"><tr><td>
 	  <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>  
 	      
-            <strong>Participants: </strong>
+               <strong>Participants: </strong>
 	      
 		 <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
 		       <li>      
@@ -102,7 +104,7 @@
 	  <%else %> 
 	     <% if Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).any? %>
 		<strong>Participants: </strong>
-	
+
 		   <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
 		      <li>        
 	       		   <%= User.find(instrumentalist.user_id).firstname %> <%= User.find(instrumentalist.user_id).lastname%>
