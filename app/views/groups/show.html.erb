@@ -78,7 +78,7 @@
 	<% end %>
      <li class="list-group-item"><table width="100%"><tr><td>
 	  <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).any? %>  
-	      <ul> <strong>Participants: </strong>
+	     <strong>Participants: </strong> <ul> 
 	      
 		 <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
 		       <li>      
