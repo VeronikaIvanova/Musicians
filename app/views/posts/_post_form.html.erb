@@ -1,5 +1,7 @@
-<%= form_for(@user_note) do |f| %>
+<%= bootsrtap_form_for(@user_note) do |f| %>
 
-  <%= f.text_area :text, placeholder: "Compose text..." %>
+  <div class="field">
+     <%= f.text_area :text, placeholder: "Compose text..." %>
+  </div
   <%= f.submit "Post", class: "btn btn-large btn-primary" %>
 <% end %>
