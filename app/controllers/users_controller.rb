@@ -5,28 +5,28 @@ class UsersController < ApplicationController
   @users = User.order(:created_at)
   @gender = Gender.all
   if !params[:name].blank?
-   @name=params[:name]
-   @users=@users.where("firstname like :name or lastname like :name",name: "%#{@name}%")
+   @name=params[:name].downcase
+   @users=@users.where("lower(firstname) like :name or lower(lastname) like :name",name: "%#{@name}%")
   end
 
-  if !params[:genders].blank?
+  if !params[:genders].blank? 
     genders = params[:genders]
     @users = @users.where(:gender_id => genders)
   end
 
- if !params[:country_name].blank?
-    country=params[:country_name]
-    @users = @users.where(:country_name => country)
+ if !params[:country_id].blank? 
+    country=params[:country_id]
+    @users = @users.where(:country_id => country.id)
   end
 
- if !params[:state_name].blank?
-    state=params[:state_name]
-    @users = @users.where(:state_name => state)
+ if !params[:state_id].blank? 
+    state=params[:state_id]
+    @users = @users.where(:state_id => state.id)
   end
 
- if !params[:city_name].blank?
-    city=params[:city_name]
-    @users= @users.where(:city_name => city)
+ if !params[:city_id].blank?
+    city=params[:city_id]
+    @users= @users.where(:city_id => city.id)
   end
 
  @users = @users.paginate(:page => params[:page], :per_page =>10)

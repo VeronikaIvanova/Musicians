@@ -1,93 +1,89 @@
 <p id="notice"><%= notice %></p>
-<div class="search">
-  <%= form_tag(resumes_path, :method => "get", class: "navbar-form", id: "search-form") do %>
     
+<div class="search_page">
 
- <select  name="country_name" >
-    <option value="" selected="">Select Country</option>
-      <% CS.countries.each do |key, value| %>
-        <option value="<%= key %>"><%= value %></option>
-      <% end %>
-  </select>  
- 
-  <select name="state_name">
-    <option value="" selected="">Select State</option>
-  </select>
-
-  <select name="city_name">
-    <option value="">Select City</option>
-  </select>
-
-  <ul>Instuments
-   <% @instruments.each do |instrument| %>
-     <li>
-        <%= check_box_tag 'instruments', instrument.id -%>
-        <%= instrument.name-%>
-     </li>
-     <% end %>
-  </ul>
-
-
-<script>
-$('select[name="country_name"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var states=$('select[name="state_name"]');
-  $.getJSON('/states/' + $(this).val(), function (data) {
-    states.empty();
-    opt= '<option value="" selected="">Select State</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ i +'>' + ele + '</option>';     
-    }); states.html(opt);
-  });
-});
-</script>
-
-
-<script>
-$('select[name="state_name"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var cities=$('select[name="city_name"]');
-  $.getJSON('/cities/' + $(this).val(), function (data) {
-    cities.empty();
-    opt= '<option value="" selected="">Select City</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ ele +'>' + ele+ '</option>';     
-    }); cities.html(opt);
-  });
-});
-</script>
+<div class="search">
+<div class="panel panel-default"> 
+	<div class="panel-heading">
+          <h3 class="panel-title"> Search </h3>
+        </div>
+  <%= form_tag(concerts_path, :method => "get", class: "navbar-form", id: "search-form") do %>
+     Country  <br>
+     <%= select_tag  :country_id,  options_for_select(Country.all.collect { |country|
+	[country.name.titleize, country.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     State  <br>
+      <%= select_tag :state_id, options_for_select(State.where(country_id: Country.first.id).collect { |state|
+	[state.name.titleize, state.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     City</br>
+      <%= select_tag :city_id, options_for_select(City.where(state_id: State.first.id).collect { |city|
+	[city.name.titleize, city.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     Instuments </br>
+     <div class="search_elem"  style ="width:200px">
+	     <% @instruments.each do |instrument| %>
+		<%= check_box_tag 'instruments', instrument.id -%>
+		<%= instrument.name-%><br>
+	     <% end %>
+     </div>
       <button class="btn" type="submit">Search</button>
-<% end %>
+ <% end %>
+ </div>
 </div>
-<h1>Listing Resumes</h1>
+<div class="search_result">
+<div class="panel panel-default"> 
+	<div class="panel-heading">
+        <table width="100%"> <tr><td>  <h3 class="panel-title"> Resumes </h3></td>
+                <td align="right"><%= link_to 'New resume', new_resume_path %></td></tr></table>
+        </div>
+ <div class="panel-body">
+      <table class="table-striped" width="100%">  
+	    <% @resumes.each do |resume| %>
+	      <tr>
+		<td><%=link_to "#{resume.instrumentalist.user.firstname}"" ""#{resume.instrumentalist.user.lastname}", user_path(resume.instrumentalist.user.id) %></td>
+                <td> <%= resume.instrumentalist.instrument.name %> </td>
+                <td><span class="timestamp"> <%= resume.created_at.strftime('%-d %b %y, %H:%M') %></span></td>
+                <td> <%= link_to "Show", resume_path(resume.id) %>
+	      </tr>
+	    <% end %>
+     </table>
+</div>
+  <div class="panel-heading">
+    <%= will_paginate @resumes %>
+  </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Instrumentalist</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+</div>
+</div>
+</div>
 
-  <tbody>
-    <% @resumes.each do |resume| %>
-      <tr>
-        <td><%= Instrument.find(Instrumentalist.find(resume.instrumentalist_id).instrument_id).name %></td>
-        <td> <%= link_to "#{User.find(Instrumentalist.find(resume.instrumentalist_id).user_id).firstname}
-            #{User.find(Instrumentalist.find(resume.instrumentalist_id).user_id).lastname}", 
-            "/users/#{current_user.id}" %> | </td>
-        <td><%= link_to 'Show', resume %> </td>
-        <% if User.find(Instrumentalist.find(resume.instrumentalist_id).user_id).id==current_user.id %>
-          <td>|<%= link_to 'Edit', edit_resume_path(resume) %> </td>
-          <td>|<%= link_to 'Destroy', resume, method: :delete, data: { confirm: 'Are you sure?' } %> </td>
-        <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
 
-<br>
+<script>
+$("#country_id").change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$("#state_id"); 
+  states.empty();
 
-<%= link_to 'New Resume', new_resume_path %>
+  $.getJSON('/get/states/' + $(this).val(), function (data) {
+  
+    opt= '';
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); states.prepend(opt);
+  });
+});
+</script>
+<script>
+$("#state_id").change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$("#city_id"); 
+  cities.empty();
+
+  $.getJSON('/get/cities/' + $(this).val(), function (data) {
+  
+    opt= '';
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); cities.prepend(opt);
+  });
+});
+</script>

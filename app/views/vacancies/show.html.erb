@@ -5,10 +5,6 @@
 
 	<% if Instrumentalist.where(user_id: current_user.id, instrument_id: @vacancy.instrument_id).any? %>
 	  <%= render 'follow_form' %>
- 	<% else %>
-	  <p> if you want to response the vacancy please add <%= Instrument.find(@vacancy.instrument_id).name %> to 
-	      your instruments by editing your profile.
-          </p>
 	<% end %></td></tr> </table>
 </div>
 
@@ -33,4 +29,10 @@
          #{User.find(answer.user_id).lastname}", "/users/#{answer.user_id}" %> </li>
       <% end %> </ul>
   <% end %>
+
+	<% if ! Instrumentalist.where(user_id: current_user.id, instrument_id: @vacancy.instrument_id).any? %>
+	  <p> If you want to response the vacancy please add <%= Instrument.find(@vacancy.instrument_id).name %> to 
+	      your instruments by editing your profile.
+          </p>
+       <%end %>
 </div></div></div>

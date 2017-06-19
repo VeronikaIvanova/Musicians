@@ -20,20 +20,26 @@ class VacanciesController < ApplicationController
     end
 
 
-    if !params[:country_name].blank?
-      country=params[:country_name]
-      @vacancies = @vacancies.where(group_id: Group.where(:country_name=> country).pluck(:id))
+    if !params[:country_id].blank?
+      country=params[:country_id]
+      @vacancies = @vacancies.where(group_id: Group.where(:country_id=> country).pluck(:id))
     end
 
-    if !params[:state_name].blank?
-      state=params[:state_name]
-      @vacancies = @vacancies.where(group_id: Group.where(:state_name=> state).pluck(:id))
+    if !params[:state_id].blank?
+      state=params[:state_id]
+      @vacancies = @vacancies.where(group_id: Group.where(:state_id=> state).pluck(:id))
     end
 
-    if !params[:city_name].blank?
-      city=params[:city_name]
-      @vacancies= @vacancies.where(group_id: Group.where(:city_name=> city).pluck(:id))
+    if !params[:city_id].blank?
+      city=params[:city_id]
+      @vacancies= @vacancies.where(group_id: Group.where(:city_id=> city).pluck(:id))
     end
+    if !params[:genres].blank?
+      genres = params[:genres]
+      @vacancies=@vacancies.where(group_id: GroupToGenre.where(:genre_id=> genres).pluck(:group_id))
+    end
+
+   @vacancies= @vacancies.paginate(:page => params[:page], :per_page =>10)
   end
 
   # GET /vacancies/1
@@ -98,7 +104,7 @@ class VacanciesController < ApplicationController
   def destroy
     @vacancy.destroy
     respond_to do |format|
-      format.html { redirect_to vacancies_url, notice: 'Vacancy was successfully destroyed.' }
+      format.html { redirect_to :back, notice: 'Vacancy was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

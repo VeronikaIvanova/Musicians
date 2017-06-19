@@ -5,7 +5,7 @@
         <td><%= render 'follow_form' %></td><td> &nbsp;</td>
 	<td><%= button_to "New chat", "/groups/#{@group.id}/write" ,
 	      :class => "btn btn-large btn-primary", :method => :get %></td><td> &nbsp;</td>
-         <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>   
+         <% if UserToGroup.where(user_id: current_user.id,group_id: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>   
            <td><%= button_to 'new vacancy', new_group_vacancy_path(@group.id),  
                  :class => "btn btn-large btn-primary", :method => :get %></td>
          <% end %>
@@ -64,12 +64,25 @@
            <li class="list-group-item">
 	     <strong>Vacancies: </strong>  <ul>      
 	     <% Vacancy.where(group_id: @group.id).each do |vacancy|%>
-	       <li>  <%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %>     </li>
+	       <li>  <table><tr>
+               <td><%= link_to "#{Instrument.find(vacancy.instrument_id).name}", "/vacancies/#{vacancy.id}" %> 
+                 <% if UserToGroup.where(user_id: current_user.id,group_id: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>              
+                    <td> &nbsp; </td>
+                     <td>  <%= link_to "delete", vacancy, method: :delete,
+			    	                     data: { confirm: "You sure?" } %> </td> 
+                  <% end %>                           
+                </tr></table></li>
+            
+
+             </li>
 	     <% end %></ul> </li>
 	<% end %>
-     <li class="list-group-item"><table width="100%"><tr><td>
+ <% if Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).any? %>
+		
+       <li class="list-group-item"><table width="100%"><tr><td>
 	  <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>  
-	      <ul> <strong>Participants: </strong>
+	      
+              <ul> <strong>Participants: </strong>
 	      
 		 <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
 		       <li>      
@@ -102,7 +115,7 @@
 	     <% end %> 
 	  <% end %>
        </li>  
-	
+   <% end %>
 
     
  

@@ -15,20 +15,21 @@ class ResumesController < ApplicationController
     end
 
 
-    if !params[:country_name].blank?
-      country=params[:country_name]
-      @resumes = @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(country_name: country).pluck(:id)).pluck(:id))
+    if !params[:country_id].blank?
+      country=params[:country_id]
+      @resumes = @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(country_id: country).pluck(:id)).pluck(:id))
     end
 
-    if !params[:state_name].blank?
-      state=params[:state_name]
-      @resumes = @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(state_name: state).pluck(:id)).pluck(:id))
+    if !params[:state_id].blank?
+      state=params[:state_id]
+      @resumes = @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(state_id: state).pluck(:id)).pluck(:id))
     end
 
     if !params[:city_name].blank?
-      city=params[:city_name]
-      @resumes= @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(city_name: city).pluck(:id)).pluck(:id))
+      city=params[:city_id]
+      @resumes= @resumes.where(:instrumentalist_id => Instrumentalist.where(:user_id => User.where(city_id: city).pluck(:id)).pluck(:id))
     end
+    @resumes= @resumes.paginate(:page => params[:page], :per_page =>10)
   end
 
   # GET /resumes/1
@@ -89,7 +90,7 @@ class ResumesController < ApplicationController
     if @user.id==current_user.id
       @resume.destroy
       respond_to do |format|
-        format.html { redirect_to resumes_url, notice: 'Resume was successfully destroyed.' }
+        format.html { redirect_to :back, notice: 'Resume was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
@@ -102,7 +103,7 @@ class ResumesController < ApplicationController
     end
     
     def set_user
-      @user=User.find(Instrumentalist.find(resume.instrumentalist_id))
+      @user=User.find(Instrumentalist.find(@resume.instrumentalist_id).user_id)
     end
       
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -8,30 +8,30 @@ class GroupsController < ApplicationController
     @groups = Group.all
     @genres = Genre.all
 
-    if !params[:genres].blank?
-      genres = params[:genres]
-      @groups=Group.find(GroupToGenre.where(:genre_id=> genres).pluck(:group_id))
-    end
-
     if !params[:name].blank?
-      @groups=params[:name]
-      @groups=@groups.where("name like :name ",name: "%#{@name}%")
+      @groups=params[:name].downcase
+      @groups=@groups.where("lower(name) like :name ",name: "%#{@name}%")
     end
 
-    if !params[:country_name].blank?
-      country=params[:country_name]
-      @groups = @groups.where(:country_name=> country)
+    if !params[:country_id].blank?
+      country=params[:country_id]
+      @groups = @groups.where(:country_id=> country)
     end
 
-    if !params[:state_name].blank?
-      state=params[:state_name]
-      @groups = @groups.where(:state_name => state)
+    if !params[:state_id].blank?
+      state=params[:state_id]
+      @groups = @groups.where(:state_id => state)
     end
 
-    if !params[:city_name].blank?
-      city=params[:city_name]
-      @groups= @groups.where(:city_name => city)
+    if !params[:city_id].blank?
+      city=params[:city_id]
+      @groups= @groups.where(:city_id => city)
     end
+   if !params[:genres].blank?
+      genres = params[:genres]
+      @groups=@groups.where(:id=> GroupToGenre.where(:genre_id=> genres).pluck(:group_id))
+    end
+    @groups= @groups.paginate(:page => params[:page], :per_page =>10)
   end
 
   # GET /groups/1

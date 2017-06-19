@@ -1,77 +1,93 @@
-<p id="notice"><%= notice %></p>
+<div class="search_page">
+
 <div class="search">
-  <%= form_tag(groups_path, :method => "get", class: "navbar-form", id: "search-form") do %>
-    
-   <%= label_tag(:name, "Search for:") %>
-   <%= text_field_tag(:name) %>
+<div class="panel panel-default"> 
+	<div class="panel-heading">
+          <h3 class="panel-title"> Search </h3>
+        </div>
+  <%= form_tag(groups_path, :method => "get", class: "navbar-form", id: "search-form") do %>   
 
- <select  name="country_name" >
-    <option value="" selected="">Select Country</option>
-      <% CS.countries.each do |key, value| %>
-        <option value="<%= key %>"><%= value %></option>
-      <% end %>
-  </select>  
+  
+   <%= text_field_tag "name" ,nil, placeholder: 'Name...' %><br>
+     Country  <br>
+     <%= select_tag  :country_id,  options_for_select(Country.all.collect { |country|
+	[country.name.titleize, country.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     State  <br>
+      <%= select_tag :state_id, options_for_select(State.where(country_id: Country.first.id).collect { |state|
+	[state.name.titleize, state.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     City</br>
+      <%= select_tag :city_id, options_for_select(City.where(state_id: State.first.id).collect { |city|
+	[city.name.titleize, city.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     Genre</br>
+	<div class="search_elem"  style ="width:200px">
+	  
+	   <% @genres.each do |genre| %>
+		<%= check_box_tag 'genres', genre.id %>
+		<%= genre.name-%>
+	     </br>
+	     <% end %>
+         </div>
+	<button class="btn" type="submit">Search</button>
+       <% end %>
+    </div>
+</div>
  
-  <select name="state_name">
-    <option value="" selected="">Select State</option>
-  </select>
+  
 
-  <select name="city_name">
-    <option value="">Select City</option>
-  </select>
-  <ul>Genres
-   <% @genres.each do |genre| %>
-     <li>
-        <%= check_box_tag 'genres', genre.id -%>
-        <%= genre.name-%>
-     </li>
-     <% end %>
-  </ul>
+<div class="search_result">
+<div class="panel panel-default"> 
+	<div class="panel-heading">
+        <table width="100%"> <tr><td>  <h3 class="panel-title"> Groups </h3></td>
+                <td align="right"><%= link_to 'New Group', new_group_path %></td></tr></table>
+        </div>
 
+ <div class="panel-body">
+      <table class="table-striped" width="100%">  
+	    <% @groups.each do |group| %>
+	      <tr>
+		<td><%=link_to "#{group.name}", group_path(group.id) %></td>
+	      </tr>
+	    <% end %>
+     </table>
+</div>
+  <div class="panel-heading">
+    <%= will_paginate @groups %>
+  </div>
 
-<script>
-$('select[name="country_name"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var states=$('select[name="state_name"]');
-  $.getJSON('/states/' + $(this).val(), function (data) {
-    states.empty();
-    opt= '<option value="" selected="">Select State</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ i +'>' + ele + '</option>';     
-    }); states.html(opt);
-  });
-});
-</script>
-
-
-<script>
-$('select[name="state_name"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var cities=$('select[name="city_name"]');
-  $.getJSON('/cities/' + $(this).val(), function (data) {
-    cities.empty();
-    opt= '<option value="" selected="">Select City</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ ele +'>' + ele+ '</option>';     
-    }); cities.html(opt);
-  });
-});
-</script>
-      <button class="btn" type="submit">Search</button>
-<% end %>
+</div>
+</div>
 </div>
 
-<h1>Listing Groups</h1>
-<table>
-    <% @groups.each do |group| %>
-      <tr>
-        <td><%=link_to "#{group.name}", group_path(group.id) %></td>
-      </tr>
-    <% end %>
-</table>
 
-<br>
+<script>
+$("#country_id").change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$("#state_id"); 
+  states.empty();
 
-<%= link_to 'New Group', new_group_path %>
+  $.getJSON('/get/states/' + $(this).val(), function (data) {
+  
+    opt= '';
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); states.prepend(opt);
+  });
+});
+</script>
+<script>
+$("#state_id").change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$("#city_id"); 
+  cities.empty();
+
+  $.getJSON('/get/cities/' + $(this).val(), function (data) {
+  
+    opt= '';
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); cities.prepend(opt);
+  });
+});
+</script>

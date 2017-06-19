@@ -8,30 +8,30 @@ class ConcertsController < ApplicationController
    @concerts = Concert.all
    @genres = Genre.all
 
+   if !params[:name].blank?
+   @concerts=params[:name].downcase
+   @concerts=@concerts.where("lower(name) like :name ",name: "%#{@name}%")
+  end
+ if !params[:country_id].blank?
+    country=params[:country_id]
+    @concerts = @concerts.where(:country_id=> country)
+  end
 
+ if !params[:state_id].blank?
+    state=params[:state_id]
+    @concerts = @concerts.where(:state_id => state)
+  end
   if !params[:genres].blank?
     genres = params[:genres]
-    @concerts=Concert.find(ConcertParticipant.where(:group_id=> GroupToGenre.where(:genre_id=> genres).pluck(:group_id)).pluck(:concert_id))
+    @concerts=@concerts.where(:id=>ConcertParticipant.where(:group_id=> GroupToGenre.where(:genre_id=> genres).pluck(:group_id)).pluck(:concert_id))
   end
 
-   if !params[:name].blank?
-   @concerts=params[:name]
-   @concerts=@concerts.where("name like :name ",name: "%#{@name}%")
-  end
- if !params[:country_name].blank?
-    country=params[:country_name]
-    @concerts = @concerts.where(:country=> country)
-  end
 
- if !params[:state_name].blank?
-    state=params[:state_name]
-    @concerts = @concerts.where(:state => state)
+ if !params[:city_id].blank?
+    city=params[:city_id]
+    @concerts= @concerts.where(:city_id => city)
   end
-
- if !params[:city_name].blank?
-    city=params[:city_name]
-    @concerts= @concerts.where(:city => city)
-  end
+    @concerts= @concerts.paginate(:page => params[:page], :per_page =>10)
  end
 
   # GET /concerts/1
@@ -43,6 +43,8 @@ class ConcertsController < ApplicationController
    if @concert_follower==nil
      @concert_follower=ConcertFollower.new
    end
+   @posts=ConcertNote.where(concert_id: @concert.id).order(created_at: :desc).paginate(:page => params[:page], :per_page =>5)
+
   end
 
   # GET /concerts/new

@@ -1,74 +1,89 @@
+<div class="search_page">
+
 <div class="search">
+<div class="panel panel-default"> 
+	<div class="panel-heading">
+          <h3 class="panel-title"> Search </h3>
+        </div>
   <%= form_tag(users_path, :method => "get", class: "navbar-form", id: "search-form") do %>
-    
- <%= label_tag(:name, "Search for:") %>
-  <%= text_field_tag(:name) %>
+     <%= text_field_tag "name" ,nil, placeholder: 'Name...' %><br>
+     Country  <br>
+     <%= select_tag  :country_id,  options_for_select(Country.all.collect { |country|
+	[country.name.titleize, country.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     State  <br>
+      <%= select_tag :state_id, options_for_select(State.where(country_id: Country.first.id).collect { |state|
+	[state.name.titleize, state.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
+     City</br>
+      <%= select_tag :city_id, options_for_select(City.where(state_id: State.first.id).collect { |city|
+	[city.name.titleize, city.id] }) , {:class => 'form-control',  :style => "width:200px", :include_blank => true} %><br>
  
- <select  name="country_name" >
-    <option value="" selected="">Select Country</option>
-      <% CS.countries.each do |key, value| %>
-        <option value="<%= key %>"><%= value %></option>
-      <% end %>
-  </select>  
- 
-  <select name="state_name">
-    <option value="" selected="">Select State</option>
-  </select>
-
-  <select name="city_name">
-    <option value="">Select City</option>
-  </select>
-          <ul>
+     Gender</br>
+     <div class="search_gender">
             <% @gender.each do |gender| %>
-                <li>
+     
                   <%= check_box_tag 'genders', gender.id -%>
-                  <%= gender.name-%>
-                </li>
+                  <%= gender.name-%> <br>
+    
             <% end %>
-        </ul>
-<script>
-$('select[name="country_name"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var states=$('select[name="state_name"]');
-  $.getJSON('/states/' + $(this).val(), function (data) {
-    states.empty();
-    opt= '<option value="" selected="">Select State</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ i +'>' + ele + '</option>';     
-    }); states.html(opt);
-  });
-});
-</script>
-
-
-<script>
-$('select[name="state_name"]').change(function() {
-  var input_state = $(this);
-  var opt;
-  var cities=$('select[name="city_name"]');
-  $.getJSON('/cities/' + $(this).val(), function (data) {
-    cities.empty();
-    opt= '<option value="" selected="">Select City</option>'
-    $.each(data, function (i, ele) {
-      opt+='<option value='+ ele +'>' + ele+ '</option>';     
-    }); cities.html(opt);
-  });
-});
-</script>
+        </div>
       <button class="btn" type="submit">Search</button>
 <% end %>
 </div>
-
-<h1>All users</h1>
-<div class="row">
-<ul>
-  <%= will_paginate @users %>
-  <% @users.each do |user| %>
-    <li>  
-     <%= user.email %>
-    </li>
-  <% end %>
-</ul>
 </div>
+<div class="search_result">
+<div class="panel panel-default"> 
+	<div class="panel-heading">
+        Users 
+        </div>
+
+ <div class="panel-body">
+      <table class="table-striped" width="100%">  
+	    <% @users.each do |user| %>
+	      <tr>
+		<td><%= image_tag avatar_url(user) %> <%=link_to "#{user.firstname}"" ""#{user.lastname}", user_path(user.id) %></td>
+	      </tr>
+	    <% end %>
+     </table>
+</div>
+  <div class="panel-heading">
+    <%= will_paginate @users %>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+$("#country_id").change(function() {
+  var input_state = $(this);
+  var opt;
+  var states=$("#state_id"); 
+  states.empty();
+
+  $.getJSON('/get/states/' + $(this).val(), function (data) {
+  
+    opt= '';
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); states.prepend(opt);
+  });
+});
+</script>
+<script>
+$("#state_id").change(function() {
+  var input_state = $(this);
+  var opt;
+  var cities=$("#city_id"); 
+  cities.empty();
+
+  $.getJSON('/get/cities/' + $(this).val(), function (data) {
+  
+    opt= '';
+    $.each(data, function (i, ele) {
+      opt+='<option value='+ ele.id +'>' + ele.name+ '</option>';     
+    }); cities.prepend(opt);
+  });
+});
+</script>
+
 

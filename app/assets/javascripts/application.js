@@ -16,4 +16,5 @@
 //= require bootstrap-sprockets
 //= require sync 
 //= require bootstrap-select
+//= require vacancies
 //= require_tree .

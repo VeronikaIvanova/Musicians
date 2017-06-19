@@ -1,12 +1,16 @@
-<%= form_for [@concert, @concert_participant]  do |f| %>
+<%= bootstrap_form_for [@concert, @concert_participant]  do |f| %>
 <div class="field">
-  <select name="concert_participant[group_id]">
+
+  <select name="concert_participant[group_id]" class="selectpicker">
       <% Group.find(UserToGroup.where(user_id: current_user.id, role_id: Role.where(name: "admin").first.id).pluck(:group_id)).each do |group| %>
         <% if ConcertParticipant.where(group_id: group.id, concert_id: @concert.id).first==nil %> 
           <option value="<%= group.id %>"><%= group.name %></option>
         <% end %>
       <% end %>
   </select>
+
+<div align="right">
   <%= f.submit "Send" %>
+</div>
 
 <% end %>
