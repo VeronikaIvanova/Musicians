@@ -31,7 +31,7 @@
 	     </ul>
           <% else %>
                <ul class="nav navbar-nav">   
-              <li><%= link_to "MakeBand!", "/feeds/" %> </li> </ul>
+              <li><%= link_to "MakeBand!", "#" %> </li> </ul>
              <ul class="nav navbar-nav navbar-right">
                <li><%= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %> </li>
                <li> <%= link_to "Login", new_user_session_path, :class => 'navbar-link'  %>  </li>
@@ -46,12 +46,12 @@
         <nav id="spy">
             <ul class="sidebar-nav nav">
               <li class="sidebar-brand active"> <a href="#home" class=""><span class="fa fa-home solo">Home</span></a> </li>
-               <li> <%= link_to " #{current_user.firstname}", "/users/#{current_user.id}"   %> 
+               <li> <%= link_to "My page", "/users/#{current_user.id}"   %> 
               <li class=""><%= link_to "Feeds", "/feeds/"  %> </li> 
               <li class=""><%= link_to "Chats", "/chats/"  %> </li>     
               <li class=""><%= link_to "Friends", "/user_friends/"  %> </li> 
-              <li class=""><%= link_to "Groups", "/user_groups/"  %> </li> 
-              <li class=""><%= link_to "Concerts", "/user_concerts/"  %> </li> 
+              <li class=""><%= link_to "My groups", "/user_groups/"  %> </li> 
+              <li class=""><%= link_to "My concerts", "/user_concerts/"  %> </li> 
             </ul>
         </nav>
     </div>
