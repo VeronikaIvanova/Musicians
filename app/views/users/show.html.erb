@@ -54,17 +54,16 @@
 <% end %>  
 <% if  Resume.where(:instrumentalist_id=>Instrumentalist.where(user_id: @user.id).pluck(:id)).any? %>   
    <li class="list-group-item">      
-        <strong> Resumes: </strong><ul>        
+        <strong> Resumes: </strong>       
                <% Resume.where(:instrumentalist_id=>Instrumentalist.where(user_id: @user.id).pluck(:id)).each do |resume| %> 
-                <li> <table ><tr>
-                     <td> <%= link_to "#{resume.instrumentalist.instrument.name}", resume_path(resume.id) %> </td>
+                <li> <%= link_to "#{resume.instrumentalist.instrument.name}", resume_path(resume.id) %> </td>
                    <% if @user.id==current_user.id %>          
-                     <td> &nbsp; </td>
-                     <td>  <%= link_to "delete", resume, method: :delete,
-				                     data: { confirm: "You sure?" } %> </td>  
-                   <%  end %>                          
-                </tr></table></li>
-               <% end %> </ul>
+                     &nbsp; 
+                      <%= link_to "delete", resume, method: :delete,
+				                     data: { confirm: "You sure?" } %>  
+                   <%  end %>
+                </li>
+               <% end %> 
     </li>
 
 <% end %>  
