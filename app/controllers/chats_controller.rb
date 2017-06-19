@@ -62,10 +62,12 @@ class ChatsController < ApplicationController
   # DELETE /chats/1
   # DELETE /chats/1.json
   def destroy
-    @chat.destroy
-    respond_to do |format|
-      format.html { redirect_to chats_url, notice: 'Chat was successfully destroyed.' }
-      format.json { head :no_content }
+    @chat_participant=ChatParticipant.where(user_id: current_user.id, chat_id: @chat.id)
+    @chat_participant.destroy
+    if !ChatParticipant.where(chat_id: @chat.id)
+      @chat.destroy
+    end
+     redirect_to chats_url
     end
   end
 

@@ -21,6 +21,7 @@
 	  <ul class="list-group"> 
 		<% @posts.each do |post| %>
 		  <li class="list-group-item">
+                  <% link_to "#{post.user.firstname}" " " "#{post.user.lastname}", user_path(post.user_id)<br>
 		  <span class="content"><%= post.text %></span><br />
 		  <span class="timestamp">
 		    Posted <%= time_ago_in_words(post.created_at) %> ago.
@@ -76,7 +77,7 @@
 	    </ul> </li>
 	<% end %>
      <li class="list-group-item"><table width="100%"><tr><td>
-	  <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).order(created_at: :desc).any? %>  
+	  <% if UserToGroup.where(user_id: current_user.id,group: @group.id, role_id: Role.where(name: "admin").first.id).any? %>  
 	      <ul> <strong>Participants: </strong>
 	      
 		 <% Instrumentalist.find(InstrumentalistToGroup.where(group_id: @group.id).pluck(:instrumentalist_id)).each do |instrumentalist| %>
