@@ -17,7 +17,6 @@
 <% if @instrumentalists.count>0 %>
     <%= f.label :Insrument %> <br />
     <select class="selectpicker" name="resume[instrumentalist_id]" > 
-      <option value="" selected=""></option>
         <% @instrumentalists.each do |instrumentalist| %>
           <option value="<%= instrumentalist.id %>"><%= Instrument.find(instrumentalist.instrument_id).name %></option>
         <% end %>
