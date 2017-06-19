@@ -5,4 +5,3 @@ class GroupNote < ActiveRecord::Base
   validates :text, presence: true
   validates :group_id, presence: true
 end
-end
