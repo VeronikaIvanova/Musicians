@@ -90,6 +90,11 @@ ActiveRecord::Schema.define(version: 20170617005609) do
     t.string "name"
   end
 
+  create_table "friend_requests", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "friends", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -171,6 +176,22 @@ ActiveRecord::Schema.define(version: 20170617005609) do
 
   add_index "messages", ["chat_id"], name: "index_messages_on_chat_id", using: :btree
   add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
+
+  create_table "request_groups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "group_id"
+    t.integer  "concert_id"
+    t.integer  "count"
+  end
+
+  create_table "responses", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "vacancy_id"
+    t.integer  "user_id"
+    t.text     "info"
+  end
 
   create_table "resume_genres", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -296,6 +317,10 @@ ActiveRecord::Schema.define(version: 20170617005609) do
   add_foreign_key "instrumentalists", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
+  add_foreign_key "request_groups", "concerts"
+  add_foreign_key "request_groups", "groups"
+  add_foreign_key "responses", "users"
+  add_foreign_key "responses", "vacancies"
   add_foreign_key "resume_genres", "genres"
   add_foreign_key "resume_genres", "resumes"
   add_foreign_key "resumes", "instrumentalists"
