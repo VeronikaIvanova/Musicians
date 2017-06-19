@@ -45,8 +45,9 @@ end
 
   def write_message
       @user = User.find(params[:id])
-      @chat= Chat.new(:Theme=> @user.firstname + " "+ @user.laststname)   
+
       if @user!=nil
+        @chat= Chat.new(:Theme=> @user.firstname + " "+ @user.laststname)   
         @chat.save
         @chat_participant=ChatParticipant.new(user_id: current_user.id, chat_id: @chat.id)
         @chat_participant.save
