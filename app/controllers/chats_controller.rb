@@ -62,7 +62,7 @@ class ChatsController < ApplicationController
   # DELETE /chats/1
   # DELETE /chats/1.json
   def destroy
-    @chat_participant=ChatParticipant.where(user_id: current_user.id, chat_id: @chat.id)
+    @chat_participant=ChatParticipant.where(user_id: current_user.id, chat_id: @chat.id).first
     
     if @chat_participant!=nil
        @chat_participant.destroy
