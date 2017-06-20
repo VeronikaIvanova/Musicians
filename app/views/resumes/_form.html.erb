@@ -26,10 +26,10 @@
      <%= f.label :Genres %><br>
       <div class="participant">
 	     <% Genre.all.each do |genre| %>
-	       <li>   
+	
 		  <%= check_box_tag "resume[genre_ids][]", genre.id, f.object.genres.include?(genre) %>
 		  <%= genre.name%>
-	       </li>
+	       <br>
 	     <% end %>
          </div> 
        <br />
