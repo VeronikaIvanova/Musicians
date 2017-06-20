@@ -28,7 +28,7 @@
           <% if @friends.any? %>
 	     <% @friends.each do |user| %>   
 	          <%= check_box_tag "chat[user_ids][]", user.id, f.object.users.include?(user) %>
-	          <%= user.firstname%> <%= user.lastname %>
+	          <%= user.firstname%> <%= user.lastname %> <br>
 	     <% end %>
 	  <% else %>
 	    You don't have friends yet
