@@ -6,16 +6,18 @@ class ConcertParticipantsController < ApplicationController
 
   def create
     @concert=Concert.find(params[:concert_id])   
-    if @concert!=nil 
+    if @concert!=nil and params[:group_id]!=nil
       @concert_participant=ConcertParticipant.new(participant_params)
-      @concert_participant.concert_id=@concert.id
-      if ConcertFollower.where(user_id: current_user.id, concert_id: @concert.id, role_id: Role.where(name: "admin").first.id).first!=nil
-        @concert_participant.status_id=Status.where(name: "agreed").first.id
-      else
-        @concert_participant.status_id=Status.where(name: "request").first.id
+
+        @concert_participant.concert_id=@concert.id
+        if ConcertFollower.where(user_id: current_user.id, concert_id: @concert.id, role_id: Role.where(name: "admin").first.id).first!=nil
+          @concert_participant.status_id=Status.where(name: "agreed").first.id
+        else
+          @concert_participant.status_id=Status.where(name: "request").first.id
+         end
+        @concert_participant.save
       end
-      @concert_participant.save
-    end
+
     redirect_to :back
   end
 
